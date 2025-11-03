@@ -1,0 +1,47 @@
+// @use "./theme" as *;÷
+
+.appShell {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.main {
+  min-height: 50vh;
+}
+
+.emptyHome {
+  height: 40vh;
+}
+
+:root {
+  --bg: #0b0f14;
+  --card: #131a22;
+  --muted: #9fb0c0;
+  --text: #e9eef3;
+  --accent: #6ec1ff;
+  --chip: #1f2a35;
+  --chipText: #cfe7ff;
+  --border: #24303c;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  --app-header-h: 56px; 
+  --drawer-z: 1000;  
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f7fbff;
+    --card: #ffffff;
+    --muted: #516274;
+    --text: #0c1722;
+    --accent: #0b82ff;
+    --chip: #eef6ff;
+    --chipText: #195cab;
+    --border: #e6eef6;
+    --shadow: 0 6px 18px rgba(16, 45, 76, 0.08);
+  }
+}
+
+* { box-sizing: border-box; }

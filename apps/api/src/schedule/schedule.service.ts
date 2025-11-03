@@ -44,7 +44,6 @@ function parseGame($: CheerioAPI, $li: CheerioType<any>, containerId: string | n
   const away = parseTeam($score.find(".team.away").first());
   const scoreText = textOrNull($score.find(".score").first().text());
 
-  // game_info 안의 <span>들은 순서가 유동적(방송 없을 수 있음). 마지막은 장소.
   const $spans = $li.find(".game_info span");
   const parts = $spans.map((_, el) => ($(el).text() ?? "").trim()).get();
 
