@@ -28,9 +28,16 @@ type ScheduleResponse = {
 };
 
 const GENDER_LABEL: Record<"W" | "M" | "", string> = { W: "여자부", M: "남자부", "": "전체" };
+const SEASONS: Record<string, string> = {
+  "2025": "25-26",
+  "2024": "24-25",
+  "2023": "23-24",
+  "2022": "22-23",
+  "2021": "21-22",
+}
 
 function useSchedule(params: { gender: "W" | "M" | ""; season?: string; type?: string }) {
-  const { gender, season = "2025", type = "1" } = params;
+  const { gender, season, type = "1" } = params;
   const [data, setData] = useState<ScheduleResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -128,7 +135,7 @@ function GameCard({ g }: { g: GameItem }) {
 
 export default function App() {
   const [gender, setGender] = useState<"W" | "M" | "">("");
-  const season = "2025";
+  const [season, setSeason] = useState<string>("2025");
   const leagueType = "1";
 
   const { data, loading, err } = useSchedule({ gender, season, type: leagueType });
@@ -154,8 +161,23 @@ export default function App() {
       <header className={styles.header}>
         <div className={styles.titleRow}>
           <h1 className={styles.title}>
-            {titleGender} 일정 {data ? `(${data.leagueSeason})` : ""}
+            {titleGender} 일정
           </h1>
+
+          <label className={styles.visuallyHidden} htmlFor="season-select">시즌 선택</label>
+          <div className={styles.seasonBox}>
+            <select
+              id="season-select"
+              className={styles.seasonSelect}
+              value={season}
+              onChange={(e) => setSeason(e.target.value)}
+              aria-label="시즌 선택"
+            >
+              {Object.keys(SEASONS).reverse().map((y) => (
+                <option key={y} value={y}>{SEASONS[y]}</option>
+              ))}
+            </select>
+          </div>
           {data?.url && (
             <a
               className={styles.link}
