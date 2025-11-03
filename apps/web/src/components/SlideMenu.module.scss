@@ -84,6 +84,39 @@
   color: var(--muted);
 }
 
+.myTeamRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.myTeamLogo {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #fff3;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.myTeamLogoFallback {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: #2b3947;
+  border: 1px dashed var(--border);
+  display: inline-block;
+}
+
+.myTeamName {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--text);
+}
+
 .divider {
   height: 1px;
   border: none;
