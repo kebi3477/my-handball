@@ -27,30 +27,38 @@ type ScheduleResponse = {
   days: DayBlock[];
 };
 
-function useSchedule() {
+const GENDER_LABEL: Record<"W" | "M" | "", string> = { W: "여자부", M: "남자부", "": "전체" };
+
+function useSchedule(params: { gender: "W" | "M" | ""; season?: string; type?: string }) {
+  const { gender, season = "2025", type = "1" } = params;
   const [data, setData] = useState<ScheduleResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    let alive = true;
+    const ctrl = new AbortController();
+    setLoading(true);
+    setErr(null);
+
     (async () => {
       try {
-        setLoading(true);
-        const res = await fetch("http://localhost:3000/api/schedule?gender=W&season=2024&type=1", { cache: "no-cache" });
+        const url = `http://localhost:3000/api/schedule?gender=${gender}&season=${season}&type=${type}`;
+        const res = await fetch(url, { cache: "no-cache", signal: ctrl.signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = (await res.json()) as ScheduleResponse;
-        if (alive) setData(json);
+        setData(json);
       } catch (e: any) {
-        if (alive) setErr(e?.message ?? "unknown error");
+        if (e?.name !== "AbortError") {
+          setErr(e?.message ?? "unknown error");
+          setData(null);
+        }
       } finally {
-        if (alive) setLoading(false);
+        if (!ctrl.signal.aborted) setLoading(false);
       }
     })();
-    return () => {
-      alive = false;
-    };
-  }, []);
+
+    return () => ctrl.abort();
+  }, [gender, season, type]);
 
   return { data, loading, err };
 }
@@ -119,30 +127,35 @@ function GameCard({ g }: { g: GameItem }) {
 }
 
 export default function App() {
-  const { data, loading, err } = useSchedule();
+  const [gender, setGender] = useState<"W" | "M" | "">("");
+  const season = "2025";
+  const leagueType = "1";
+
+  const { data, loading, err } = useSchedule({ gender, season, type: leagueType });
   const [query, setQuery] = useState("");
-  const [onlyWithBroadcast, setOnlyWithBroadcast] = useState(false);
 
   const filteredDays = useMemo(() => {
     if (!data) return [];
     const q = query.trim().toLowerCase();
     const pred = (g: GameItem) => {
-      const text =
-        `${g.home.name} ${g.away.name} ${g.venue ?? ""} ${(g.broadcast ?? []).join(" ")}`.toLowerCase();
+      const text = `${g.home.name} ${g.away.name} ${g.venue ?? ""} ${(g.broadcast ?? []).join(" ")}`.toLowerCase();
       if (q && !text.includes(q)) return false;
-      if (onlyWithBroadcast && (!g.broadcast || g.broadcast.length === 0)) return false;
       return true;
     };
     return data.days
       .map((d) => ({ ...d, games: d.games.filter(pred) }))
       .filter((d) => d.games.length > 0);
-  }, [data, query, onlyWithBroadcast]);
+  }, [data, query]);
+
+  const titleGender = data ? GENDER_LABEL[data.leagueGender] : GENDER_LABEL[gender];
 
   return (
     <div className={styles.app}>
       <header className={styles.header}>
         <div className={styles.titleRow}>
-          <h1 className={styles.title}>여자부 일정 {data ? `(${data.leagueSeason})` : ""}</h1>
+          <h1 className={styles.title}>
+            {titleGender} 일정 {data ? `(${data.leagueSeason})` : ""}
+          </h1>
           {data?.url && (
             <a
               className={styles.link}
@@ -156,6 +169,35 @@ export default function App() {
           )}
         </div>
 
+        {/* 성별 전환 탭 */}
+        <div className={styles.tabs} role="tablist" aria-label="성별 선택">
+          <button
+            role="tab"
+            aria-selected={gender === ""}
+            className={`${styles.tab} ${gender === "" ? styles.tabActive : ""}`}
+            onClick={() => setGender("")}
+          >
+            전체
+          </button>
+          <button
+            role="tab"
+            aria-selected={gender === "W"}
+            className={`${styles.tab} ${gender === "W" ? styles.tabActive : ""}`}
+            onClick={() => setGender("W")}
+          >
+            여자부
+          </button>
+          <button
+            role="tab"
+            aria-selected={gender === "M"}
+            className={`${styles.tab} ${gender === "M" ? styles.tabActive : ""}`}
+            onClick={() => setGender("M")}
+          >
+            남자부
+          </button>
+        </div>
+
+        {/* 검색 */}
         <div className={styles.controls}>
           <input
             className={styles.search}
@@ -163,24 +205,14 @@ export default function App() {
             placeholder="팀/장소/방송 검색"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label="검색"
           />
-          <label className={styles.toggle}>
-            <input
-              type="checkbox"
-              checked={onlyWithBroadcast}
-              onChange={(e) => setOnlyWithBroadcast(e.target.checked)}
-            />
-            <span>방송 있는 경기만</span>
-          </label>
         </div>
       </header>
 
       {loading && <p className={styles.state}>불러오는 중…</p>}
       {err && <p className={styles.stateError}>에러: {err}</p>}
-
-      {!loading && !err && filteredDays.length === 0 && (
-        <p className={styles.state}>조건에 맞는 경기가 없어요.</p>
-      )}
+      {!loading && !err && filteredDays.length === 0 && <p className={styles.state}>조건에 맞는 경기가 없어요.</p>}
 
       <main className={styles.list} role="list">
         {filteredDays.map((d) => (

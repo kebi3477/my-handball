@@ -71,6 +71,34 @@
   align-items: center;
 }
 
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tab {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #111827;
+  color: #fff;
+  border: 1px solid #111827;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.tab:active { transform: translateY(1px); }
+.tab:hover { background: #f3f4f6; }
+.tabActive {
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  background: #f9fafb;
+  box-shadow: 0 2px 8px rgba(17, 24, 39, .15);
+}
+
 .search {
   flex: 1;
   height: 38px;
