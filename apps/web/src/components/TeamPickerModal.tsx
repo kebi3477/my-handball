@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./TeamPickerModal.module.scss";
+import { API_ENDPOINTS } from "@/config/api";
 
 export type Gender = "W" | "M";
 export type TeamItem = { teamNum: number; name: string; logoUrl: string | null; href: string | null };
@@ -32,7 +33,9 @@ export default function TeamPickerModal({
         setLoading(true);
         setErr(null);
         setItems([]);
-        const res = await fetch(`http://localhost:3000/api/team?gender=${gender}`, { cache: "no-cache" });
+        const url = new URL(API_ENDPOINTS.team);
+        url.searchParams.set("gender", gender);
+        const res = await fetch(url.toString(), { cache: "no-cache" });
         const json = (await res.json()) as TeamApiRes;
         if (alive) setItems(Array.isArray(json.teams) ? json.teams : []);
       } catch (e: any) {

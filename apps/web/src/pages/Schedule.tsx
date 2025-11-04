@@ -1,74 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import styles from "./Schedule.module.scss";
-
-type TeamInfo = {
-  name: string;
-  logoUrl: string | null;
-};
-type GameItem = {
-  home: TeamInfo;
-  away: TeamInfo;
-  scoreText: string | null;
-  time: string | null;
-  broadcast: string[];
-  venue: string | null;
-  containerId: string | null;
-};
-type DayBlock = {
-  dateLabel: string;
-  dateISO: string | null;
-  games: GameItem[];
-};
-type ScheduleResponse = {
-  url: string;
-  leagueGender: "W" | "M";
-  leagueSeason: string;
-  leagueType: string;
-  days: DayBlock[];
-};
-
-const GENDER_LABEL: Record<"W" | "M" | "", string> = { W: "여자부", M: "남자부", "": "전체" };
-const SEASONS: Record<string, string> = {
-  "2025": "25-26",
-  "2024": "24-25",
-  "2023": "23-24",
-  "2022": "22-23",
-  "2021": "21-22",
-}
-
-function useSchedule(params: { gender: "W" | "M" | ""; season?: string; type?: string }) {
-  const { gender, season, type = "1" } = params;
-  const [data, setData] = useState<ScheduleResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
-
-  useEffect(() => {
-    const ctrl = new AbortController();
-    setLoading(true);
-    setErr(null);
-
-    (async () => {
-      try {
-        const url = `http://localhost:3000/api/schedule?gender=${gender}&season=${season}&type=${type}`;
-        const res = await fetch(url, { cache: "no-cache", signal: ctrl.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json = (await res.json()) as ScheduleResponse;
-        setData(json);
-      } catch (e: any) {
-        if (e?.name !== "AbortError") {
-          setErr(e?.message ?? "unknown error");
-          setData(null);
-        }
-      } finally {
-        if (!ctrl.signal.aborted) setLoading(false);
-      }
-    })();
-
-    return () => ctrl.abort();
-  }, [gender, season, type]);
-
-  return { data, loading, err };
-}
+import { useSchedule } from "@/hooks/useSchedule";
+import { DEFAULT_SEASON_YEAR, GENDER_LABEL, SEASON_LABELS, SEASON_YEARS } from "@/constants/schedule";
+import type { GameItem } from "@/types/schedule";
+import type { Gender } from "@/types/team";
+import type { SeasonKey } from "@/constants/schedule";
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
   if (!src) return <div className={styles.logoFallback} aria-label={alt} />;
@@ -134,8 +70,8 @@ function GameCard({ g }: { g: GameItem }) {
 }
 
 function Schedule() {
-  const [gender, setGender] = useState<"W" | "M" | "">("");
-  const [season, setSeason] = useState<string>("2025");
+  const [gender, setGender] = useState<Gender | "">("");
+  const [season, setSeason] = useState<SeasonKey>(DEFAULT_SEASON_YEAR);
   const leagueType = "1";
 
   const { data, loading, err } = useSchedule({ gender, season, type: leagueType });
@@ -170,11 +106,11 @@ function Schedule() {
               id="season-select"
               className={styles.seasonSelect}
               value={season}
-              onChange={(e) => setSeason(e.target.value)}
+              onChange={(e) => setSeason(e.target.value as SeasonKey)}
               aria-label="시즌 선택"
             >
-              {Object.keys(SEASONS).reverse().map((y) => (
-                <option key={y} value={y}>{SEASONS[y]}</option>
+              {SEASON_YEARS.map((y) => (
+                <option key={y} value={y}>{SEASON_LABELS[y]}</option>
               ))}
             </select>
           </div>
