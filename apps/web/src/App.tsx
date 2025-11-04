@@ -6,6 +6,7 @@ import SlideMenu from "./components/SlideMenu";
 import styles from "./App.module.scss";
 
 import Schedule from "./pages/Schedule";
+import Calendar from "./pages/Calendar";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,8 +17,9 @@ export default function App() {
         <Header onOpenMenu={() => setMenuOpen(true)} />
 
         <Routes>
-            <Route path="/schedule" element={<Schedule />} />
             <Route path="/" element={<></>} />
+            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/calendar" element={<Calendar />} />
         </Routes>
 
         <Footer />

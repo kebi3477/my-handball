@@ -22,7 +22,6 @@ function textOrNull(x?: string): string | null {
 }
 
 function parseDateISO(dateLabel: string): string | null {
-  // 예: "2026.01.10 (토)"
   const m = dateLabel.match(/^(\d{4})\.(\d{2})\.(\d{2})/);
   if (!m) return null;
   const iso = `${m[1]}-${m[2]}-${m[3]}`;
@@ -68,11 +67,12 @@ function parseGame($: CheerioAPI, $li: CheerioType<any>, containerId: string | n
 
 @Injectable()
 export class ScheduleService {
-  private buildUrl(league_gender: string, league_season: string, league_type: string) {
+  private buildUrl(league_gender: string, league_season: string, league_type: string, league_month: string) {
     const u = new URL(`${BASE}/game/schedule_list.php`);
     u.searchParams.set("league_gender", league_gender);
     u.searchParams.set("league_season", league_season);
     u.searchParams.set("league_type", league_type);
+    u.searchParams.set("league_season_month", league_month);
     return u.toString();
   }
 
@@ -80,8 +80,9 @@ export class ScheduleService {
     league_gender: "W" | "M" = "W",
     league_season = "2025",
     league_type = "1",
+    league_month = "",
   ): Promise<ScheduleResponse> {
-    const url = this.buildUrl(league_gender, league_season, league_type);
+    const url = this.buildUrl(league_gender, league_season, league_type, league_month);
 
     const { data: html } = await axios.get(url, {
       headers: {
@@ -105,7 +106,6 @@ export class ScheduleService {
       const dateLabel = ($block.find("p.date").first().text() ?? "").trim();
       const dateISO = parseDateISO(dateLabel);
 
-      // 한 날짜 블록의 ul id (예: m1768057200)
       const containerId = $block.find("ul.list").attr("id") ?? null;
 
       const games: GameItem[] = [];
@@ -123,6 +123,7 @@ export class ScheduleService {
       leagueGender: league_gender,
       leagueSeason: league_season,
       leagueType: league_type,
+      leagueMonth: league_month,
       days,
     };
   }

@@ -24,5 +24,6 @@ export interface ScheduleResponse {
   leagueGender: "W" | "M";
   leagueSeason: string;  // "2025"
   leagueType: string;    // "1"
+  leagueMonth: string;
   days: DayBlock[];
 }

@@ -1,50 +1,23 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./SlideMenu.module.scss";
-import TeamPickerModal, { TeamItem } from "./TeamPickerModal";
+import TeamPickerModal from "./TeamPickerModal";
+import { useMyTeam } from "@/hooks/useMyTeam";
+import type { MyTeam, TeamItem } from "@/types/team";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-const MY_TEAM_KEY = "myTeam";
+function SlideMenu({ isOpen, onClose }: Props) {
+  const { team: myTeam, save } = useMyTeam();
 
-export default function SlideMenu({ isOpen, onClose }: Props) {
-  const [myTeam, setMyTeam] = useState<TeamItem | null>(null);
-
-  useEffect(() => {
-    // 초기 로드 + 다른 탭에서 변경 대응
-    const load = () => {
-      try {
-        const raw = localStorage.getItem(MY_TEAM_KEY);
-        setMyTeam(raw ? (JSON.parse(raw) as TeamItem) : null);
-      } catch {
-        setMyTeam(null);
-      }
-    };
-    load();
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === MY_TEAM_KEY) load();
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  const saveMyTeam = (next: TeamItem | null) => {
-    setMyTeam(next);
-    try {
-      if (next) localStorage.setItem(MY_TEAM_KEY, JSON.stringify(next));
-      else localStorage.removeItem(MY_TEAM_KEY);
-    } catch {}
-  };
-  
   const myTeamLabel = useMemo(
     () => (myTeam ? myTeam.name : "팀을 선택해 주세요"),
     [myTeam]
   );
 
-  // 모달 on/off
   const [pickerOpen, setPickerOpen] = useState(false);
 
   return (
@@ -62,7 +35,9 @@ export default function SlideMenu({ isOpen, onClose }: Props) {
       >
         <div className={styles.panelHeader}>
           <h2 className={styles.panelTitle}>메뉴</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="메뉴 닫기">✕</button>
+          <button className={styles.closeBtn} onClick={onClose} aria-label="메뉴 닫기">
+            ✕
+          </button>
         </div>
 
         <nav className={styles.nav}>
@@ -92,15 +67,15 @@ export default function SlideMenu({ isOpen, onClose }: Props) {
             )}
           </button>
 
-          {/* 구분선 */}
+          {myTeam && (
+            <Link className={styles.itemLink} to="/calendar" onClick={onClose}>
+              <div className={styles.itemTitle}>달력</div>
+              <div className={styles.itemDesc}>내 팀 일정 보기</div>
+            </Link>
+          )}
+
           <hr className={styles.divider} />
 
-          {/* 달력 (향후 연결 예정) */}
-          <button className={styles.item} type="button" onClick={() => {/* TODO: 달력 화면 연결 */}}>
-            <div className={styles.itemTitle}>달력</div>
-          </button>
-
-          {/* 전체 일정 */}
           <Link className={styles.itemLink} to="/schedule" onClick={onClose}>
             <div className={styles.itemTitle}>전체 일정</div>
             <div className={styles.itemDesc}>리그 전체 일정 보기</div>
@@ -108,16 +83,16 @@ export default function SlideMenu({ isOpen, onClose }: Props) {
         </nav>
       </aside>
 
-      {/* 분리된 모달 컴포넌트 */}
       <TeamPickerModal
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
-        onPicked={(team) => {
-          localStorage.setItem(MY_TEAM_KEY, JSON.stringify(team));
-          setMyTeam(team);
+        onPicked={(team: TeamItem) => {
+          save(team as MyTeam);
           setPickerOpen(false);
         }}
       />
     </>
   );
 }
+
+export default SlideMenu;

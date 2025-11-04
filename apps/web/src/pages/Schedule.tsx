@@ -133,7 +133,7 @@ function GameCard({ g }: { g: GameItem }) {
   );
 }
 
-export default function Schedule() {
+function Schedule() {
   const [gender, setGender] = useState<"W" | "M" | "">("");
   const [season, setSeason] = useState<string>("2025");
   const leagueType = "1";
@@ -254,3 +254,5 @@ export default function Schedule() {
     </div>
   );
 }
+
+export default Schedule;

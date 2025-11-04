@@ -14,7 +14,8 @@ export class ScheduleController {
     @Query("gender") gender: "W" | "M" = "W",
     @Query("season") season = "2025",
     @Query("type") type = "1",
+    @Query("month") month = "",
   ): Promise<ScheduleResponse> {
-    return this.svc.fetchSchedule(gender, season, type);
+    return this.svc.fetchSchedule(gender, season, type, month);
   }
 }
