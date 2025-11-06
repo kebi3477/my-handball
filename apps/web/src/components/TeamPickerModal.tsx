@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import styles from "./TeamPickerModal.module.scss";
 import { API_ENDPOINTS } from "@/config/api";
+import type { Gender, MyTeam, TeamItem } from "@/types/team";
 
-export type Gender = "W" | "M";
-export type TeamItem = { teamNum: number; name: string; logoUrl: string | null; href: string | null };
-export type TeamApiRes = { url: string; gender: Gender; teams: TeamItem[] };
-export type MyTeam = { gender: Gender; teamNum: number; name: string; logoUrl: string | null };
+type TeamApiRes = { url: string; gender: Gender; teams: TeamItem[] };
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  onPicked: (picked: TeamItem) => void;
+  onPicked: (picked: MyTeam) => void;
   initialGender?: Gender;
 };
 
@@ -24,6 +22,10 @@ export default function TeamPickerModal({
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [items, setItems] = useState<TeamItem[]>([]);
+
+  useEffect(() => {
+    setGender(initialGender);
+  }, [initialGender]);
 
   useEffect(() => {
     if (!open) return;
@@ -88,7 +90,7 @@ export default function TeamPickerModal({
               <button
                 key={`${gender}-${t.teamNum}`}
                 className={styles.teamCell}
-                onClick={() => onPicked({ teamNum: t.teamNum, name: t.name, logoUrl: t.logoUrl, href: t.href })}
+                onClick={() => onPicked({ ...t, gender })}
                 type="button"
               >
                 {t.logoUrl ? (

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "./SlideMenu.module.scss";
 import TeamPickerModal from "./TeamPickerModal";
 import { useMyTeam } from "@/hooks/useMyTeam";
-import type { MyTeam, TeamItem } from "@/types/team";
+import type { MyTeam } from "@/types/team";
 
 type Props = {
   isOpen: boolean;
@@ -86,8 +86,9 @@ function SlideMenu({ isOpen, onClose }: Props) {
       <TeamPickerModal
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
-        onPicked={(team: TeamItem) => {
-          save(team as MyTeam);
+        initialGender={myTeam?.gender ?? "W"}
+        onPicked={(team: MyTeam) => {
+          save(team);
           setPickerOpen(false);
         }}
       />

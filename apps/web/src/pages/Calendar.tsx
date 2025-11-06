@@ -11,10 +11,8 @@ import type { SeasonKey } from "@/constants/schedule";
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
 type Props = {
-  /** 디폴트 시즌 (예: "2025") */
   defaultSeason?: SeasonKey;
-  /** 디폴트 리그 타입 */
-  leagueType?: string; // 기본 "1"
+  leagueType?: string;
 };
 
 export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueType = "1" }: Props) {
@@ -22,10 +20,9 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
 
   const today = new Date();
   const [year, setYear] = useState<number>(today.getFullYear());
-  const [month, setMonth] = useState<number>(today.getMonth() + 1); // 1~12
+  const [month, setMonth] = useState<number>(today.getMonth() + 1);
   const [season, setSeason] = useState<SeasonKey>(defaultSeason);
 
-  // gender는 마이팀 설정이 있으면 따르고, 없으면 전체("")로 조회
   const gender: Gender | "" = myTeam?.gender ?? "";
 
   const { data, loading, err } = useSchedule({
@@ -35,7 +32,6 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
     month,
   });
 
-  // 날짜별로 "마이팀 경기"만 골라 매핑
   const byDate = useMemo(() => {
     const map = new Map<string, GameSummary[]>();
     if (!data || !myTeam) return map;
@@ -44,11 +40,11 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
       if (!day.dateISO) return;
       const dt = parseISODate(day.dateISO);
       if (!dt) return;
-      const key = day.dateISO; // "YYYY-MM-DD"
+      const key = day.dateISO;
 
       day.games.forEach((g) => {
         const summary = summarizeGameForTeam(myTeam.name, g);
-        if (!summary) return; // 마이팀 경기 아님
+        if (!summary) return;
         const list = map.get(key) ?? [];
         list.push(summary);
         map.set(key, list);
@@ -123,7 +119,6 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
       </header>
 
       <main className={styles.calendar}>
-        {/* 요일 헤더 */}
         <div className={styles.weekHeader}>
           {DAY_LABELS.map((d) => (
             <div key={d} className={styles.weekHeaderCell} aria-hidden>
@@ -132,7 +127,6 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
           ))}
         </div>
 
-        {/* 달력 그리드 */}
         <div className={styles.grid} role="grid" aria-label="월간 캘린더">
           {matrix.map((week, wi) => (
             <div key={wi} className={styles.weekRow} role="row">
@@ -150,22 +144,19 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
                     <div className={styles.events}>
                       {items.map((it, idx) => (
                         <article key={idx} className={styles.eventCard} role="listitem" aria-label="마이팀 경기">
-                          {/* ✅ 로고만 */}
                           {it.opponentLogo ? (
                             <img
                               className={styles.opponentLogo}
                               src={it.opponentLogo}
-                              alt="" // 장식용
+                              alt=""
                               loading="lazy"
                             />
                           ) : (
                             <span className={styles.opponentLogoFallback} aria-hidden />
                           )}
 
-                          {/* ✅ 점수 */}
                           <div className={styles.score}>{it.scoreText}</div>
 
-                          {/* ✅ 승/패/무 */}
                           <div
                             className={`${styles.result} ${
                               it.result === "승"
