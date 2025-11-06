@@ -8,7 +8,7 @@ import { DayBlock, GameItem, ScheduleResponse, TeamInfo } from "./types";
 
 dayjs.locale("ko");
 
-const BASE = "https://www.koreahandball.com";
+const BASE = process.env.BASE ?? '';
 
 function absUrl(pathOrUrl?: string | null): string | null {
   if (!pathOrUrl) return null;

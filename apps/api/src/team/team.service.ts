@@ -4,7 +4,7 @@ import { load, CheerioAPI } from "cheerio";
 import { TeamItem, TeamListResponse, Gender } from "./types";
 import { CacheService } from "src/cache/cache.service";
 
-const BASE = "https://www.koreahandball.com";
+const BASE = process.env.BASE ?? '';
 const URLS = {
   W: `${BASE}/introduce/team_women.php`,
   M: `${BASE}/introduce/team_men.php`,
