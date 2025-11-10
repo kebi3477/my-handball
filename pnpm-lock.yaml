@@ -75,6 +75,9 @@ importers:
 
   apps/web:
     dependencies:
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       react:
         specifier: ^18.3.1
         version: 18.3.1

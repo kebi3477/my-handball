@@ -127,7 +127,6 @@ function Schedule() {
           )}
         </div>
 
-        {/* 성별 전환 탭 */}
         <div className={styles.tabs} role="tablist" aria-label="성별 선택">
           <button
             role="tab"
@@ -155,7 +154,6 @@ function Schedule() {
           </button>
         </div>
 
-        {/* 검색 */}
         <div className={styles.controls}>
           <input
             className={styles.search}

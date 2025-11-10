@@ -1,8 +1,4 @@
-const DEFAULT_API_BASE_URL = "http://localhost:3000";
-
-const envBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
-
-export const API_BASE_URL = envBaseUrl && envBaseUrl.length > 0 ? envBaseUrl : DEFAULT_API_BASE_URL;
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export const API_ENDPOINTS = {
   schedule: `${API_BASE_URL}/api/schedule`,

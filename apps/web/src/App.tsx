@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import SlideMenu from "./components/SlideMenu";
 import styles from "./App.module.scss";
 
+import Main from "./pages/Main";
 import Schedule from "./pages/Schedule";
 import Calendar from "./pages/Calendar";
 
@@ -17,7 +18,7 @@ export default function App() {
         <Header onOpenMenu={() => setMenuOpen(true)} />
 
         <Routes>
-            <Route path="/" element={<></>} />
+            <Route path="/" element={<Main />} />
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/calendar" element={<Calendar />} />
         </Routes>
