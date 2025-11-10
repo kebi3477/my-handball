@@ -15,11 +15,9 @@ function toGameDate(d: DayBlock, g: GameItem): Date {
   return new Date(y || 1970, (m || 1) - 1, day || 1, hh || 12, mm || 0, 0, 0);
 }
 function isSameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
+  const today0 = new Date(b);
+  today0.setHours(0, 0, 0, 0);
+  return a.getTime() >= today0.getTime();
 }
 
 type SlideItem = {
