@@ -13,18 +13,16 @@
   overflow: hidden; white-space: nowrap;
 }
 
-/* ====== 상단 컨트롤바 (성별/시즌) ====== */
-.controlsBar {
-  width: 100vw;
-  padding: 10px 12px;
+/* 하단 랭킹 헤더 안쪽에만 컨트롤 배치 */
+.rankControls {
   display: flex;
   gap: 10px;
   align-items: center;
-  border-bottom: 1px solid var(--border);
-  background: color-mix(in oklab, var(--bg) 95%, transparent);
+  margin-left: auto; /* 제목 오른쪽 정렬 */
   flex-wrap: wrap;
 }
 
+/* 세그먼트 토글 (기존 스타일 재사용) */
 .seg {
   display: inline-flex;
   background: var(--card);
@@ -33,7 +31,6 @@
   box-shadow: var(--shadow);
   overflow: hidden;
 }
-
 .segBtn {
   padding: 8px 14px;
   font-size: 13px;
@@ -44,11 +41,12 @@
   cursor: pointer;
 }
 .segBtn + .segBtn { border-left: 1px solid var(--border); }
-
-.segActive {
-  background: #111827;
-  color: #fff;
-}
+.segActive { 
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  background: #f9fafb;
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.15);
+ }
 
 .seasonSelect {
   height: 34px;

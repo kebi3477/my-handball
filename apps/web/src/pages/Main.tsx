@@ -16,11 +16,22 @@ function toGameDate(d: DayBlock, g: GameItem): Date {
   const [hh, mm] = time.split(":").map(Number);
   return new Date(y || 1970, (m || 1) - 1, day || 1, hh || 12, mm || 0, 0, 0);
 }
-// 오늘 00:00 포함 이후만 true → 미래 중 가장 가까운 인덱스 찾기 용도
-function isSameDay(a: Date, b: Date) {
+function isSameDayOrFuture(a: Date, b: Date) {
   const today0 = new Date(b);
   today0.setHours(0, 0, 0, 0);
   return a.getTime() >= today0.getTime();
+}
+function pickNearestFutureIndex(list: { date: Date }[], now = Date.now()) {
+  let best = -1;
+  let bestDiff = Number.POSITIVE_INFINITY;
+  list.forEach((s, i) => {
+    const diff = s.date.getTime() - now; // 미래면 양수
+    if (diff >= 0 && diff < bestDiff) {
+      bestDiff = diff;
+      best = i;
+    }
+  });
+  return best >= 0 ? best : Math.max(0, list.length - 1);
 }
 
 type SlideItem = {
@@ -41,21 +52,15 @@ export default function Main() {
   const myTeamName = myTeam?.name ?? "";
   const myTeamGender = (myTeam?.gender as Gender | "") ?? "";
 
-  /** ====== 컨트롤 상태 (성별/시즌) ====== */
-  const [gender, setGender] = useState<Gender | "">(myTeamName ? myTeamGender || "W" : "W");
-  const [season, setSeason] = useState<string>(DEFAULT_SEASON_YEAR);
-
-  /** 상단: 가까운 경기 */
+  /** ====== 상단: 가까운 경기 (선택과 무관하게 최신 시즌, 전체 성별) ====== */
   const { data, loading, err } = useSchedule({
-    gender,
-    season,
+    gender: myTeamGender,
+    season: DEFAULT_SEASON_YEAR,
     type: "1",
   });
 
   const slides = useMemo<SlideItem[]>(() => {
     if (!data) return [];
-    const today0 = new Date();
-    today0.setHours(0, 0, 0, 0);
 
     const all: SlideItem[] = [];
     for (const d of data.days) {
@@ -74,11 +79,11 @@ export default function Main() {
       }
     }
 
-    const filtered = (myTeamName ? all.filter((x) => x.isMyTeam) : all)
-      .filter((x) => x.date.getTime() >= today0.getTime())
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
+    // ✅ 마이팀 있으면 마이팀 경기만, 없으면 전체. 과거/미래 모두 유지
+    const base = myTeamName ? all.filter((x) => x.isMyTeam) : all;
 
-    return filtered;
+    // 날짜 오름차순으로만 정렬
+    return base.sort((a, b) => a.date.getTime() - b.date.getTime());
   }, [data, myTeamName]);
 
   const railRef = useRef<HTMLDivElement | null>(null);
@@ -86,58 +91,31 @@ export default function Main() {
 
   useEffect(() => {
     if (!slides.length || !railRef.current) return;
-    const el = itemRefs.current[0];
+
+    const idx = pickNearestFutureIndex(slides);
+    const el = itemRefs.current[idx];
     if (el) {
       const left = el.offsetLeft - 12; // 패딩 보정
       railRef.current.scrollTo({ left, behavior: "auto" });
     }
-  }, [slides.length, gender, season]);
+  }, [slides]);
 
-  /** 하단: 랭킹 (성별/시즌 선택과 연동) */
-  const { data: ranking, loading: rankLoading, err: rankErr } = useRanking({
-    gender,
-    season,
+  /** ====== 하단: 랭킹(=캘린더/표) 전용 컨트롤 ====== */
+  const [rankGender, setRankGender] = useState<Gender | "">(myTeamGender || "W");
+  const [rankSeason, setRankSeason] = useState<string>(DEFAULT_SEASON_YEAR);
+
+  const {
+    data: ranking,
+    loading: rankLoading,
+    err: rankErr,
+  } = useRanking({
+    gender: rankGender,
+    season: rankSeason,
     type: "1",
   });
 
   return (
     <div className={styles.page}>
-      {/* 상단: 컨트롤 (성별/시즌) */}
-      <section className={styles.controlsBar} aria-label="필터">
-        <div className={styles.seg}>
-          <button
-            type="button"
-            className={`${styles.segBtn} ${gender === "W" ? styles.segActive : ""}`}
-            aria-pressed={gender === "W"}
-            onClick={() => setGender("W")}
-          >
-            여자부
-          </button>
-          <button
-            type="button"
-            className={`${styles.segBtn} ${gender === "M" ? styles.segActive : ""}`}
-            aria-pressed={gender === "M"}
-            onClick={() => setGender("M")}
-          >
-            남자부
-          </button>
-        </div>
-
-        <label className={styles.visuallyHidden} htmlFor="season-select">시즌 선택</label>
-        <select
-          id="season-select"
-          className={styles.seasonSelect}
-          value={season}
-          onChange={(e) => setSeason(e.target.value)}
-          aria-label="시즌 선택"
-        >
-          {SEASON_YEARS.map((y) => (
-            <option key={y} value={y}>{SEASON_LABELS[y]}</option>
-          ))}
-        </select>
-      </section>
-
-      {/* 상단: 가까운 경기 */}
       <section className={styles.top} aria-label="가까운 경기">
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>가까운 경기</h2>
@@ -202,15 +180,49 @@ export default function Main() {
         )}
       </section>
 
-      {/* 하단: 랭킹 테이블 */}
       <section className={styles.bottom} aria-label="팀 랭킹">
         <header className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>
-            {ranking?.leagueGender === "M" ? "남자부" : "여자부"} 랭킹
+            {rankGender === "M" ? "남자부" : "여자부"} 랭킹
           </h2>
-          <span className={styles.badgeMuted}>
-            시즌 {ranking?.leagueSeason ?? season}
-          </span>
+
+          <div className={styles.rankControls}>
+            <div className={styles.seg}>
+              <button
+                type="button"
+                className={`${styles.segBtn} ${rankGender === "W" ? styles.segActive : ""}`}
+                aria-pressed={rankGender === "W"}
+                onClick={() => setRankGender("W")}
+              >
+                여자부
+              </button>
+              <button
+                type="button"
+                className={`${styles.segBtn} ${rankGender === "M" ? styles.segActive : ""}`}
+                aria-pressed={rankGender === "M"}
+                onClick={() => setRankGender("M")}
+              >
+                남자부
+              </button>
+            </div>
+
+            <label className={styles.visuallyHidden} htmlFor="season-select">
+              시즌 선택
+            </label>
+            <select
+              id="season-select"
+              className={styles.seasonSelect}
+              value={rankSeason}
+              onChange={(e) => setRankSeason(e.target.value)}
+              aria-label="시즌 선택"
+            >
+              {SEASON_YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {SEASON_LABELS[y]}
+                </option>
+              ))}
+            </select>
+          </div>
         </header>
 
         {rankLoading && <p className={styles.state}>랭킹 불러오는 중…</p>}
