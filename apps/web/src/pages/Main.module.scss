@@ -1,9 +1,69 @@
-/* 페이지는 일반 블록 흐름으로 — 헤더/풋터와 충돌 X */
+/* 페이지 */
 .page {
   background: var(--bg);
   color: var(--text);
 }
 
+/* 접근성용 숨김 라벨 */
+.visuallyHidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; border: 0; padding: 0;
+  clip: rect(0 0 0 0); clip-path: inset(50%);
+  overflow: hidden; white-space: nowrap;
+}
+
+/* ====== 상단 컨트롤바 (성별/시즌) ====== */
+.controlsBar {
+  width: 100vw;
+  padding: 10px 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg) 95%, transparent);
+  flex-wrap: wrap;
+}
+
+.seg {
+  display: inline-flex;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.segBtn {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.segBtn + .segBtn { border-left: 1px solid var(--border); }
+
+.segActive {
+  background: #111827;
+  color: #fff;
+}
+
+.seasonSelect {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  box-shadow: var(--shadow);
+}
+
+/* ====== 공통 헤더 요소 ====== */
 .sectionHeader {
   display: flex;
   align-items: center;
@@ -25,7 +85,7 @@
 .badge { background: color-mix(in oklab, var(--accent) 15%, transparent); }
 .badgeMuted { color: var(--muted); }
 
-/* 상단 섹션: 여백만 */
+/* 상단 섹션 */
 .top {
   width: 100vw;
   padding: 10px 12px 6px;
@@ -34,16 +94,8 @@
 }
 
 .bottom {
+  width: 100vw;
   padding: 10px 12px 14px;
-}
-.tablePlaceholder {
-  height: 220px;
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  color: var(--muted);
-  background: color-mix(in oklab, var(--bg) 90%, transparent);
 }
 
 /* 상태 */
@@ -54,7 +106,7 @@
 }
 .stateError { color: #ff6b6b; }
 
-/* ========= 가로 슬라이더 (네이티브 스크롤) ========= */
+/* ========= 가로 슬라이더 ========= */
 .rail {
   display: grid;
   grid-auto-flow: column;
@@ -176,4 +228,81 @@
 .venue {
   font-size: 12px;
   color: var(--muted);
+}
+
+/* ========= 랭킹 테이블 ========= */
+.rankWrap {
+  background: color-mix(in oklab, var(--bg) 96%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: auto;
+}
+.rankTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+.rankTable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 8px;
+  text-align: center;
+  white-space: nowrap;
+}
+.rankTable tbody td {
+  padding: 10px 8px;
+  border-bottom: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  text-align: center;
+}
+
+.thRank { width: 52px; }
+.thTeam { text-align: left !important; }
+
+.tdRank { font-weight: 800; }
+.tdTeam {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.teamLogoSm {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.teamLogoFallbackSm {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: #2b3947;
+  border: 1px dashed var(--border);
+}
+.teamText {
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 승점/득실 색상 강조 */
+.tdPoints { font-weight: 900; }
+.pos { color: #22c55e; font-weight: 800; } /* + */
+.neg { color: #ef4444; font-weight: 800; } /* - */
+
+.rowMyTeam {
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+}
+.rankLink {
+  display: inline-block;
+  margin: 10px 8px;
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
 }
