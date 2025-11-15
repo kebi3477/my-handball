@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import styles from "./Calendar.module.scss";
 import { useMyTeam } from "@/hooks/useMyTeam";
-import { useSchedule } from "@/hooks/useSchedule";
+import { useSchedule, downloadMyTeamIcs } from "@/hooks/useSchedule";
 import { DEFAULT_SEASON_YEAR, SEASON_LABELS, SEASON_YEARS } from "@/constants/schedule";
 import { getMonthMatrix, parseISODate, summarizeGameForTeam } from "@/utils/schedule";
 import type { GameSummary } from "@/utils/schedule";
@@ -69,6 +69,27 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
     setMonth(d.getMonth() + 1);
   };
 
+   const handleSyncMyTeamCalendar = async () => {
+    if (!myTeam) {
+      alert("먼저 마이팀을 설정해 주세요.");
+      return;
+    }
+
+    try {
+      await downloadMyTeamIcs(
+        {
+          gender: gender || "",
+          season,
+          type: leagueType,
+        },
+        myTeam.name,
+      );
+    } catch (e) {
+      console.error(e);
+      alert("캘린더 파일 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+    }
+  };
+
   return (
     <div className={styles.app}>
       <header className={styles.header}>
@@ -112,6 +133,16 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
               <span className={styles.myTeamName}>마이팀을 선택해 주세요</span>
             )}
           </div>
+
+          {myTeam && (
+            <button
+              type="button"
+              className={styles.syncBtn}
+              onClick={handleSyncMyTeamCalendar}
+            >
+              마이팀 전체 일정 연동하기
+            </button>
+          )}
         </div>
 
         {err && <p className={styles.stateError}>에러: {err}</p>}

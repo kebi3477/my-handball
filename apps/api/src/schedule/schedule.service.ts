@@ -127,4 +127,78 @@ export class ScheduleService {
       days,
     };
   }
+
+  async buildMyTeamSeasonIcs(
+    league_gender: "W" | "M",
+    league_season: string,
+    league_type: string,
+    teamName: string,
+  ): Promise<string> {
+    const allDays: DayBlock[] = [];
+
+    for (let m = 1; m <= 12; m++) {
+      const monthStr = m.toString().padStart(2, "0");
+      const monthSchedule = await this.fetchSchedule(
+        league_gender,
+        league_season,
+        league_type,
+        monthStr,
+      );
+      allDays.push(...monthSchedule.days);
+    }
+
+    const lines: string[] = [];
+    lines.push("BEGIN:VCALENDAR");
+    lines.push("PRODID:-//myteam-calendar//KO//");
+    lines.push("VERSION:2.0");
+    lines.push("CALSCALE:GREGORIAN");
+    lines.push("METHOD:PUBLISH");
+
+    const nowStamp = dayjs().format("YYYYMMDD[T]HHmmss[Z]");
+
+    for (const day of allDays) {
+      if (!day.dateISO) continue;
+
+      for (const game of day.games) {
+        const isMyTeam =
+          game.home.name === teamName || game.away.name === teamName;
+        if (!isMyTeam) continue;
+
+        const timeLabel = game.time ?? "12:00";
+
+        const [hhRaw, mmRaw] = timeLabel.split(":");
+        const hh = (hhRaw ?? "12").padStart(2, "0");
+        const mm = (mmRaw ?? "00").padStart(2, "0");
+
+        const start = dayjs(`${day.dateISO} ${hh}:${mm}`);
+        const end = start.add(2, "hour"); 
+
+        const dtStart = start.format("YYYYMMDD[T]HHmmss");
+        const dtEnd = end.format("YYYYMMDD[T]HHmmss");
+
+        const vsText = `${game.home.name} vs ${game.away.name}`;
+        const summary = vsText;
+
+        const location = game.venue ?? "";
+
+        const uidBase = `${league_season}-${day.dateISO}-${game.home.name}-${game.away.name}`;
+        const uid = `${uidBase.replace(/\s+/g, "_")}@myteam-calendar`;
+
+        lines.push("BEGIN:VEVENT");
+        lines.push(`UID:${uid}`);
+        lines.push(`DTSTAMP:${nowStamp}`);
+        lines.push(`DTSTART:${dtStart}`);
+        lines.push(`DTEND:${dtEnd}`);
+        lines.push(`SUMMARY:${summary}`);
+        if (location) {
+          lines.push(`LOCATION:${location}`);
+        }
+        lines.push("END:VEVENT");
+      }
+    }
+
+    lines.push("END:VCALENDAR");
+
+    return lines.join("\r\n");
+  }
 }

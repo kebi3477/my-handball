@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { buildScheduleUrl } from "@/config/api";
+import { buildScheduleUrl, buildScheduleMyTeamIcsUrl } from "@/config/api";
 import type { ScheduleFilters, ScheduleResponse } from "@/types/schedule";
 
 export type UseScheduleResult = {
@@ -45,4 +45,51 @@ export function useSchedule({
   }, [gender, season, type, month]);
 
   return { data, loading, err };
+}
+
+type MyTeamIcsParams = {
+  gender?: string | null;
+  season: string;
+  type?: string;
+};
+
+export async function downloadMyTeamIcs(
+  { gender, season, type = "1" }: MyTeamIcsParams,
+  teamName: string,
+): Promise<void> {
+  if (!teamName) {
+    throw new Error("teamName이 없습니다.");
+  }
+
+  const url = buildScheduleMyTeamIcsUrl({
+    gender: gender ?? "",
+    season,
+    type,
+    teamName,
+  });
+
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    window.location.href = url;
+    return;
+  }
+
+  const res = await fetch(url, {
+    method: "GET",
+  });
+
+  if (!res.ok) {
+    throw new Error(`ICS 다운로드 실패 (HTTP ${res.status})`);
+  }
+
+  const blob = await res.blob();
+  const objectUrl = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = objectUrl;
+  a.download = `myteam-${season}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(objectUrl);
 }

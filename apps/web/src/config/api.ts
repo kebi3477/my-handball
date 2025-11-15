@@ -4,6 +4,7 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export const API_ENDPOINTS = {
   schedule: `${API_BASE_URL}/api/schedule`,
+  scheduleMyTeamIcs: `${API_BASE_URL}/api/schedule/ics/my-team`,
   team: `${API_BASE_URL}/api/team`,
   ranking: `${API_BASE_URL}/api/ranking`
 } as const;
@@ -12,6 +13,15 @@ export type ScheduleEndpointParams = Record<string, string | number | undefined 
 
 export function buildScheduleUrl(params: ScheduleEndpointParams = {}) {
   const url = new URL(API_ENDPOINTS.schedule);
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    url.searchParams.set(key, String(value));
+  });
+  return url.toString();
+}
+
+export function buildScheduleMyTeamIcsUrl(params: ScheduleEndpointParams = {}) {
+  const url = new URL(API_ENDPOINTS.scheduleMyTeamIcs);
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined || value === null) return;
     url.searchParams.set(key, String(value));

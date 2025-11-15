@@ -4,28 +4,15 @@ import { useSchedule } from "@/hooks/useSchedule";
 import { useRanking } from "@/hooks/useRanking";
 import { useMyTeam } from "@/hooks/useMyTeam";
 import { DEFAULT_SEASON_YEAR, SEASON_YEARS, SEASON_LABELS } from "@/constants/schedule";
-import type { DayBlock, GameItem } from "@/types/schedule";
+import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
-import { shortTeamName } from "@/utils/common";
+import { shortTeamName, toGameDate } from "@/utils/common";
 
-/** ====== 스케줄 유틸 ====== */
-function toGameDate(d: DayBlock, g: GameItem): Date {
-  const base = (d.dateISO ?? "").trim(); // YYYY-MM-DD
-  const time = (g.time ?? "12:00").trim();
-  const [y, m, day] = base.split("-").map(Number);
-  const [hh, mm] = time.split(":").map(Number);
-  return new Date(y || 1970, (m || 1) - 1, day || 1, hh || 12, mm || 0, 0, 0);
-}
-function isSameDayOrFuture(a: Date, b: Date) {
-  const today0 = new Date(b);
-  today0.setHours(0, 0, 0, 0);
-  return a.getTime() >= today0.getTime();
-}
-function pickNearestFutureIndex(list: { date: Date }[], now = Date.now()) {
+function pickIndex(list: { date: Date }[], now = Date.now()) {
   let best = -1;
   let bestDiff = Number.POSITIVE_INFINITY;
   list.forEach((s, i) => {
-    const diff = s.date.getTime() - now; // 미래면 양수
+    const diff = s.date.getTime() - now;
     if (diff >= 0 && diff < bestDiff) {
       bestDiff = diff;
       best = i;
@@ -52,7 +39,6 @@ export default function Main() {
   const myTeamName = myTeam?.name ?? "";
   const myTeamGender = (myTeam?.gender as Gender | "") ?? "";
 
-  /** ====== 상단: 가까운 경기 (선택과 무관하게 최신 시즌, 전체 성별) ====== */
   const { data, loading, err } = useSchedule({
     gender: myTeamGender,
     season: DEFAULT_SEASON_YEAR,
@@ -79,10 +65,7 @@ export default function Main() {
       }
     }
 
-    // ✅ 마이팀 있으면 마이팀 경기만, 없으면 전체. 과거/미래 모두 유지
     const base = myTeamName ? all.filter((x) => x.isMyTeam) : all;
-
-    // 날짜 오름차순으로만 정렬
     return base.sort((a, b) => a.date.getTime() - b.date.getTime());
   }, [data, myTeamName]);
 
@@ -92,7 +75,7 @@ export default function Main() {
   useEffect(() => {
     if (!slides.length || !railRef.current) return;
 
-    const idx = pickNearestFutureIndex(slides);
+    const idx = pickIndex(slides);
     const el = itemRefs.current[idx];
     if (el) {
       const left = el.offsetLeft - 12; // 패딩 보정
@@ -100,7 +83,6 @@ export default function Main() {
     }
   }, [slides]);
 
-  /** ====== 하단: 랭킹(=캘린더/표) 전용 컨트롤 ====== */
   const [rankGender, setRankGender] = useState<Gender | "">(myTeamGender || "W");
   const [rankSeason, setRankSeason] = useState<string>(DEFAULT_SEASON_YEAR);
 

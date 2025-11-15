@@ -89,7 +89,7 @@
   width: 18px; height: 18px;
   border-radius: 6px;
   object-fit: contain;
-  background: #fff3;
+  background: #fff;
 }
 .myTeamLogoFallback {
   width: 18px; height: 18px;
@@ -98,6 +98,24 @@
   border: 1px dashed var(--border);
 }
 .myTeamName { font-size: 12px; font-weight: 700; }
+
+.syncBtn {
+  margin-left: 8px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--accent, #1e88e5);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.syncBtn:hover {
+  opacity: 0.9;
+}
 
 .visuallyHidden {
   position: absolute !important;

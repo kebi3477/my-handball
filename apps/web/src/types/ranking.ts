@@ -8,15 +8,15 @@ export type RankTeamInfo = {
 export type RankItem = {
   rank: number;
   team: RankTeamInfo;
-  played: number;       // 경기수
-  points: number;       // 승점
-  wins: number;         // 승
-  draws: number;        // 무
-  losses: number;       // 패
-  goalsFor: number;     // 득점
-  goalsAgainst: number; // 실점
-  goalDiff: number;     // 득실차
-  last5: ("W" | "L" | "D")[]; // 최근 5경기
+  played: number;       
+  points: number;      
+  wins: number;       
+  draws: number;      
+  losses: number;     
+  goalsFor: number;    
+  goalsAgainst: number;
+  goalDiff: number;     
+  last5: ("W" | "L" | "D")[];
 };
 
 export type RankingResponse = {
@@ -30,5 +30,5 @@ export type RankingResponse = {
 export type RankingFilters = {
   gender: Gender | "";
   season: string;
-  type?: string; // 기본 "1"
+  type?: string;
 };
