@@ -1,0 +1,13 @@
+.git
+.gitignore
+.DS_Store
+node_modules
+.turbo
+dist
+apps/*/node_modules
+apps/*/dist
+apps/web/.vite
+packages/*/node_modules
+.env*
+docker-compose.override.yml
+tmp

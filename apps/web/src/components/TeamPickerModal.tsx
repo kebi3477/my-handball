@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./TeamPickerModal.module.scss";
-import { API_ENDPOINTS } from "@/config/api";
+import { API_ENDPOINTS, resolveApiUrl } from "@/config/api";
 import type { Gender, MyTeam, TeamItem } from "@/types/team";
 
 type TeamApiRes = { url: string; gender: Gender; teams: TeamItem[] };
@@ -35,7 +35,7 @@ export default function TeamPickerModal({
         setLoading(true);
         setErr(null);
         setItems([]);
-        const url = new URL(API_ENDPOINTS.team);
+        const url = resolveApiUrl(API_ENDPOINTS.team);
         url.searchParams.set("gender", gender);
         const res = await fetch(url.toString(), { cache: "no-cache" });
         const json = (await res.json()) as TeamApiRes;
