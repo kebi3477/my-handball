@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: pnpm run build
 
-  cd:
+  docker-build-and-push:
     needs: build
     runs-on: ubuntu-latest
 
@@ -69,3 +69,22 @@ jobs:
         run: |
           docker push ghcr.io/$OWNER/$IMAGE_API:${{ github.sha }}
           docker push ghcr.io/$OWNER/$IMAGE_WEB:${{ github.sha }}
+
+  deploy:
+    needs: docker-build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            set -e
+            cd /home/kebi/projects/my-handball
+            git pull
+            docker compose pull || true
+            docker compose up -d --build --remove-orphans
