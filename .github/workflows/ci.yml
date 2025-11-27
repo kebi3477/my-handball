@@ -22,8 +22,10 @@ jobs:
           node-version: 20
           cache: pnpm
 
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Enable Corepack and install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.0.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -31,7 +33,7 @@ jobs:
       - name: Build
         run: pnpm run build
 
-  docker-build-and-push:
+  cd:
     needs: build
     runs-on: ubuntu-latest
 
