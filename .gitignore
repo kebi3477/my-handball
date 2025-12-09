@@ -24,6 +24,7 @@ pnpm-debug.log*
 # Local env files
 .env
 .env*.local
+ssl/
 
 # IDEs
 .vscode
