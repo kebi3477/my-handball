@@ -8,9 +8,14 @@ import styles from "./App.module.scss";
 import Main from "./pages/Main";
 import Schedule from "./pages/Schedule";
 import Calendar from "./pages/Calendar";
+import Welcome from "./pages/Welcome";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <Welcome />
+  )
 
   return (
     <BrowserRouter>
