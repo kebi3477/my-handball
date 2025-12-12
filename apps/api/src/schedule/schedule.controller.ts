@@ -20,6 +20,9 @@ export class ScheduleController {
     return this.svc.fetchSchedule(gender, season, type, month);
   }
 
+  /**
+   * GET /schedule/ics/my-team?gender=W&season=2025&type=1
+   */
   @Get("ics/my-team")
   async getMyTeamIcs(
     @Query("gender") gender: "W" | "M" = "W",
