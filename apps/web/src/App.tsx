@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Menu from "./components/Menu";
 import SlideMenu from "./components/SlideMenu";
 import styles from "./App.module.scss";
 
@@ -24,16 +25,18 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className={styles.appShell}>
+      <div className={styles.app}>
         <Header onOpenMenu={() => setMenuOpen(true)} />
 
-        <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/schedule" element={<Schedule />} />
-            <Route path="/calendar" element={<Calendar />} />
-        </Routes>
+        <div className={styles.app__page}>
+          <Routes>
+              <Route path="/" element={<Main />} />
+              <Route path="/schedule" element={<Schedule />} />
+              <Route path="/calendar" element={<Calendar />} />
+          </Routes>
+        </div>
 
-        <Footer />
+        <Menu />
 
         <SlideMenu
           isOpen={menuOpen}

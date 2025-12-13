@@ -1,19 +1,15 @@
 // @use "./theme" as *;÷
 
-.appShell {
+.app {
   min-height: 100dvh;
   background: var(--bg);
   color: var(--text);
   display: grid;
   grid-template-rows: auto 1fr auto;
-}
 
-.main {
-  min-height: 50vh;
-}
-
-.emptyHome {
-  height: 40vh;
+  &__page {
+    height: calc(100dvh - var(--app-menu-height) - var(--app-header-height));
+  }
 }
 
 :root {
@@ -26,7 +22,6 @@
   --chipText: #cfe7ff;
   --border: #24303c;
   --shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-  --app-header-h: 56px; 
   --drawer-z: 1000;  
 }
 
