@@ -27,7 +27,7 @@ export type RankingResponse = {
   items: RankItem[];
 };
 
-export type RankingFilters = {
+export type RankingRequest = {
   gender: Gender | "";
   season: string;
   type?: string;

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./TeamPickerModal.module.scss";
-import { API_ENDPOINTS, resolveApiUrl } from "@/config/api";
 import type { Gender, MyTeam, TeamItem } from "@/types/team";
-
-type TeamResponse = { url: string; gender: Gender; teams: TeamItem[] };
+import { useTeam } from "@/hooks/useTeam";
 
 type Props = {
   open: boolean;
@@ -19,35 +17,12 @@ export default function TeamPickerModal({
   initialGender = "W",
 }: Props) {
   const [gender, setGender] = useState<Gender>(initialGender);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState<string | null>(null);
-  const [items, setItems] = useState<TeamItem[]>([]);
 
+  const { data, loading, error } = useTeam({ gender });
+  
   useEffect(() => {
     setGender(initialGender);
   }, [initialGender]);
-
-  useEffect(() => {
-    if (!open) return;
-    let alive = true;
-    (async () => {
-      try {
-        setLoading(true);
-        setErr(null);
-        setItems([]);
-        const url = resolveApiUrl(API_ENDPOINTS.team);
-        url.searchParams.set("gender", gender);
-        const res = await fetch(url.toString(), { cache: "no-cache" });
-        const json = (await res.json()) as TeamResponse;
-        if (alive) setItems(Array.isArray(json.teams) ? json.teams : []);
-      } catch (e: any) {
-        if (alive) setErr(e?.message ?? "unknown error");
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-    return () => { alive = false; };
-  }, [gender, open]);
 
   if (!open) return null;
 
@@ -83,10 +58,10 @@ export default function TeamPickerModal({
 
         {/* 목록 */}
         {loading && <p className={styles.state}>불러오는 중…</p>}
-        {err && <p className={styles.stateError}>에러: {err}</p>}
-        {!loading && !err && (
+        {error && <p className={styles.stateError}>에러: {error}</p>}
+        {!loading && !error && (
           <div className={styles.teamGrid}>
-            {items.map((t) => (
+            {!loading && data?.teams.map((t) => (
               <button
                 key={`${gender}-${t.teamNum}`}
                 className={styles.teamCell}

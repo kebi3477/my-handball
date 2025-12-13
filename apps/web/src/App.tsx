@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Header from "./components/Header";
-import Footer from "./components/Footer";
 import Menu from "./components/Menu";
 import SlideMenu from "./components/SlideMenu";
 import styles from "./App.module.scss";

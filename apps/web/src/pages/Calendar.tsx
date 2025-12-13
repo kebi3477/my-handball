@@ -76,14 +76,12 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
     }
 
     try {
-      await downloadMyTeamIcs(
-        {
-          gender: gender || "",
-          season,
-          type: leagueType,
-        },
-        myTeam.name,
-      );
+      await downloadMyTeamIcs({
+        gender,
+        season,
+        type: leagueType,
+        teamName: myTeam.name,
+      });
     } catch (e) {
       console.error(e);
       alert("캘린더 파일 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.");
