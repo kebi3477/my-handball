@@ -30,9 +30,16 @@ export type ScheduleResponse = {
   days: DayBlock[];
 };
 
-export type ScheduleFilters = {
+export type ScheduleRequest = {
   gender: Gender | "";
   season?: string;
   type?: string;
   month?: number;
 };
+
+export type ScheduleMyTeamRequest = {
+  gender: Gender | "";
+  season: string;
+  type: string;
+  teamName: string;
+}

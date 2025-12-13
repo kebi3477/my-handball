@@ -1,4 +1,6 @@
-import type { Gender, TeamRequest } from "@/types/team";
+import { RankingRequest } from "@/types/ranking";
+import { ScheduleMyTeamRequest, ScheduleRequest } from "@/types/schedule";
+import type { TeamRequest } from "@/types/team";
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
@@ -26,21 +28,28 @@ export function resolveApiUrl(path: string) {
 
 export type ScheduleEndpointParams = Record<string, string | number | undefined | null>;
 
-export function buildScheduleUrl(params: ScheduleEndpointParams = {}) {
+export function buildScheduleUrl({ 
+  gender, season, type, month 
+} : ScheduleRequest) {
   const url = resolveApiUrl(API_ENDPOINTS.schedule);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === null) return;
-    url.searchParams.set(key, String(value));
-  });
+  url.searchParams.set("gender", gender);
+  url.searchParams.set("season", season ?? '');
+  url.searchParams.set("type", type ?? '');
+  url.searchParams.set("month", `${month}`);
   return url.toString();
 }
 
-export function buildScheduleMyTeamIcsUrl(params: ScheduleEndpointParams = {}) {
+export function buildScheduleMyTeamIcsUrl({
+  gender,
+  season,
+  type,
+  teamName
+}: ScheduleMyTeamRequest) {
   const url = resolveApiUrl(API_ENDPOINTS.scheduleMyTeamIcs);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === null) return;
-    url.searchParams.set(key, String(value));
-  });
+  url.searchParams.set("gender", gender);
+  url.searchParams.set("season", season ?? '');
+  url.searchParams.set("type", type ?? '');
+  url.searchParams.set("teamName", teamName);
   return url.toString();
 }
 
@@ -48,11 +57,7 @@ export function buildRankingUrl({
   gender,
   season,
   type = "1",
-}: {
-  gender: Gender | "";
-  season: string;
-  type?: string;
-}) {
+}: RankingRequest) {
   const g = gender === "M" ? "M" : "W";
   const url = resolveApiUrl(API_ENDPOINTS.ranking);
   url.searchParams.set("gender", g);
