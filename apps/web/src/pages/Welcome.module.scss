@@ -9,39 +9,156 @@
     width: 400%;
     display: flex;
     flex-flow: row nowrap;
-    transition: .5s;
+    transition: all .5s ease-in-out;
     
-    > div {
+    .step {
+      width: 25%;
       padding: 40px;
-      flex: 1;
-    }
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
 
-    .logo {
-      display: flex;
-      flex-flow: column nowrap;
-      gap: 8px;
-      align-items: center;
-      justify-content: center;
-      margin-top: 80px;
-    }
-  
-    .welcome {
-      font-size: 20px;
-      line-height: 140%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      margin-top: 40px;
+      .logo {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 80px;
+      }
+    
+      .welcome {
+        font-size: 20px;
+        line-height: 140%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin-top: 40px;
+      }
+
+      &__title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 28px;
+        text-align: center;
+
+        color: var(--color-black);
+        margin-top: 80px;
+      }
+
+      .gender {
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 15px;
+        margin-top: 20px;
+
+        &__button {
+          width: 100%;
+          height: 166px;
+          background-color: var(--color-gray-light);
+
+          &.active {
+            background-color: var(--color-main);
+          }
+        }
+      }
+
+      .age {
+        display: flex;
+        flex-flow: row wrap;
+        gap: 14px;
+
+        &__button {
+          border-radius: 10rem;
+          border: 1px solid var(--color-gray-light);
+          padding: 10px 20px;
+
+          &.active {
+            background: var(--color-main);
+            border-color: var(--color-main);
+            color: var(--color-white);
+            box-shadow: 0 6px 14px rgba(0, 104, 255, 0.18);
+          }
+        }
+      }
+
+      .team {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 14px;
+
+        &__block {
+          display: flex;
+          flex-flow: column nowrap;
+          align-items: center;
+          gap: 4px;
+          
+          background-color: var(--color-white);
+          border-radius: 10px;
+          padding: 10px;
+          border: 3px solid var(--color-gray-light);
+
+          &.active {
+            border-color: var(--color-main);
+          }
+        }
+
+        &__image {
+          width: 90%;
+
+          img {
+            width: 100%;
+          }
+        }
+
+        &__name {
+          font-size: 10px;
+        }
+      }
+
+      .team_gender {
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+
+        &__button {
+          border-radius: 10rem;
+          border: 1px solid var(--color-gray-light);
+          padding: 10px 20px;
+          
+          &.active {
+            background-color: var(--color-main);
+            border-color: var(--color-main);
+            color: var(--color-white);
+          }
+        }
+
+      }
     }
   }
 
   .button_area {
     display: flex;
-    flex-flow: row nowrap;
+    flex-direction: column;
+    align-items: stretch;
     margin-top: auto;
-    gap: 15px;
+    gap: 12px;
     padding: 40px;
+
+    .buttonRow {
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 15px;
+    }
 
     button {
       width: 100%;
@@ -54,16 +171,22 @@
       
       font-weight: bold;
       font-size: 15px;
-    }
-    
-    .primary {
-      background-color: var(--color-main);
-      color: var(--color-white);
-    }
+      cursor: pointer;
 
-    .secondary {
-      background-color: var(--color-gray-light);
-      color: var(--color-white);
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      &.primary {
+        background-color: var(--color-main);
+        color: var(--color-white);
+      }
+  
+      &.secondary {
+        background-color: var(--color-gray-light);
+        color: var(--color-white);
+      }
     }
   }
 }

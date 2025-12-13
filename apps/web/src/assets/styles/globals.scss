@@ -1,6 +1,7 @@
 :root {
   --color-main: #0068FF;
   --color-white: #FFFFFF;
+  --color-black: #333333;
   --color-gray-light: #BFBFBF;
 }
 
@@ -27,5 +28,7 @@ body {
 button {
   outline: none;
   border: none;
+  background-color: transparent;
+  transition: all .2s ease-in-out;
 }
 

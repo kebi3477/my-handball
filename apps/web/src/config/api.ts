@@ -1,4 +1,4 @@
-import type { Gender } from "@/types/team";
+import type { Gender, TeamRequest } from "@/types/team";
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
@@ -58,5 +58,13 @@ export function buildRankingUrl({
   url.searchParams.set("gender", g);
   url.searchParams.set("season", season);
   url.searchParams.set("type", type);
+  return url.toString();
+}
+
+export function buildTeamUrl({
+  gender,
+}: TeamRequest) {
+  const url = resolveApiUrl(API_ENDPOINTS.team);
+  url.searchParams.set("gender", gender);
   return url.toString();
 }
