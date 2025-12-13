@@ -3,7 +3,7 @@ import type { MyTeam } from "@/types/team";
 
 const STORAGE_KEY = "myTeam";
 
-function readFromStorage(): MyTeam | null {
+function read(): MyTeam | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
@@ -13,16 +13,13 @@ function readFromStorage(): MyTeam | null {
   }
 }
 
-function writeToStorage(value: MyTeam | null) {
+function write(value: MyTeam | null) {
   if (typeof window === "undefined") return;
-  try {
-    if (value) {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
-    } else {
-      window.localStorage.removeItem(STORAGE_KEY);
-    }
-  } catch {
-    // ignore storage errors (e.g., private mode) 
+
+  if (value) {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+  } else {
+    window.localStorage.removeItem(STORAGE_KEY);
   }
 }
 
@@ -33,34 +30,29 @@ export const myTeamAtom = atom<MyTeam | null>({
     ({ setSelf, onSet, resetSelf }) => {
       if (typeof window === "undefined") return;
 
-      const stored = readFromStorage();
-      if (stored) setSelf(stored);
+      setSelf(read());
 
-      const handleStorage = (event: StorageEvent) => {
+      const onStorage = (event: StorageEvent) => {
         if (event.key !== STORAGE_KEY) return;
-        if (event.newValue) {
-          try {
-            setSelf(JSON.parse(event.newValue) as MyTeam);
-          } catch {
-            resetSelf();
-          }
-        } else {
+        try {
+          setSelf(JSON.parse(event.newValue ?? '') as MyTeam);
+        } catch {
           resetSelf();
         }
       };
 
-      window.addEventListener("storage", handleStorage);
+      window.addEventListener("storage", onStorage);
 
       onSet((newValue, _, isReset) => {
         if (isReset || newValue == null) {
-          writeToStorage(null);
+          write(null);
           return;
         }
-        writeToStorage(newValue);
+        write(newValue);
       });
 
       return () => {
-        window.removeEventListener("storage", handleStorage);
+        window.removeEventListener("storage", onStorage);
       };
     },
   ],

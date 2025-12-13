@@ -7,9 +7,14 @@ export type TeamItem = {
   href: string | null;
 };
 
-export type TeamApiRes = {
+export type TeamRequest = {
   gender: Gender;
-  items: TeamItem[];
+}
+
+export type TeamResponse = {
+  gender: Gender;
+  teams: TeamItem[];
+  url: string;
 };
 
 export type MyTeam = TeamItem & {

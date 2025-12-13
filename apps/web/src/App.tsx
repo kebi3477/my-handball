@@ -9,13 +9,18 @@ import Main from "./pages/Main";
 import Schedule from "./pages/Schedule";
 import Calendar from "./pages/Calendar";
 import Welcome from "./pages/Welcome";
+import { useProfileSetup } from "./hooks/useProfileSetup";
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  return (
-    <Welcome />
-  )
+  const { profileSetup } = useProfileSetup();
+
+  if (!profileSetup) {
+    return (
+      <Welcome />
+    )
+  }
 
   return (
     <BrowserRouter>

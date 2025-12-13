@@ -3,7 +3,7 @@ import styles from "./TeamPickerModal.module.scss";
 import { API_ENDPOINTS, resolveApiUrl } from "@/config/api";
 import type { Gender, MyTeam, TeamItem } from "@/types/team";
 
-type TeamApiRes = { url: string; gender: Gender; teams: TeamItem[] };
+type TeamResponse = { url: string; gender: Gender; teams: TeamItem[] };
 
 type Props = {
   open: boolean;
@@ -38,7 +38,7 @@ export default function TeamPickerModal({
         const url = resolveApiUrl(API_ENDPOINTS.team);
         url.searchParams.set("gender", gender);
         const res = await fetch(url.toString(), { cache: "no-cache" });
-        const json = (await res.json()) as TeamApiRes;
+        const json = (await res.json()) as TeamResponse;
         if (alive) setItems(Array.isArray(json.teams) ? json.teams : []);
       } catch (e: any) {
         if (alive) setErr(e?.message ?? "unknown error");
