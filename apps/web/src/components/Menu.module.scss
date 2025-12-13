@@ -1,0 +1,46 @@
+.menu {
+  width: 100%;
+  height: var(--app-menu-height);
+  background-color: var(--color-white);
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  z-index: 5;
+
+  &__item {
+    flex: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    gap: 5px;  
+
+    &__icon {
+      width: 24px;
+      height: 24px;
+      filter: grayscale(1);
+      opacity: 0.5;
+    }
+
+    &__name {
+      font-size: 12px;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 12px;
+      text-align: center;
+      color: var(--color-black);
+    }
+
+    &.active {
+      .menu__item__icon {
+        filter: grayscale(0);
+        opacity: 1;
+      }
+
+      .menu__item__name {
+        color: var(--color-main);
+      }
+    }
+  }
+
+}

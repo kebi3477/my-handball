@@ -9,7 +9,7 @@
 
 .header {
   position: sticky;
-  top: var(--app-header-h);
+  top: var(--app-header-height);
   z-index: 10;
   backdrop-filter: saturate(180%) blur(10px);
   background: color-mix(in oklab, var(--bg) 85%, transparent);
