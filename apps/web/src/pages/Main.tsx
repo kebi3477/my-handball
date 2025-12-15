@@ -39,7 +39,7 @@ export default function Main() {
   const myTeamName = myTeam?.name ?? "";
   const myTeamGender = (myTeam?.gender as Gender | "") ?? "";
 
-  const { data, loading, err } = useSchedule({
+  const { data, loading, error } = useSchedule({
     gender: myTeamGender,
     season: DEFAULT_SEASON_YEAR,
     type: "1",
@@ -89,7 +89,7 @@ export default function Main() {
   const {
     data: ranking,
     loading: rankLoading,
-    err: rankErr,
+    error: rankErr,
   } = useRanking({
     gender: rankGender,
     season: rankSeason,
@@ -109,12 +109,12 @@ export default function Main() {
         </header>
 
         {loading && <p className={styles.state}>불러오는 중…</p>}
-        {err && <p className={styles.stateError}>에러: {err}</p>}
-        {!loading && !err && slides.length === 0 && (
+        {error && <p className={styles.stateError}>에러: {error}</p>}
+        {!loading && !error && slides.length === 0 && (
           <p className={styles.state}>앞으로 예정된 경기가 없어요.</p>
         )}
 
-        {!loading && !err && slides.length > 0 && (
+        {!loading && !error && slides.length > 0 && (
           <div className={styles.rail} ref={railRef}>
             {slides.map((s, i) => {
               const g = s.game;

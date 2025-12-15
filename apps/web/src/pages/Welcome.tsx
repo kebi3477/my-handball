@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import Symbol from "@/assets/icons/symbol.svg?react";
 import Logo from "@/assets/icons/logo.svg?react";
+import ProgressBackIcon from "@/assets/icons/icon-progress-back.svg?react";
+import TeamCheckIcon from "@/assets/icons/icon-team-check.svg?react";
 import type { Gender, TeamItem } from "@/types/team";
 import style from "./Welcome.module.scss";
 import { useTeam } from "@/hooks/useTeam";
@@ -13,11 +15,12 @@ const GENDER_OPTIONS: { value: Gender; label: string }[] = [
 ];
 
 const AGE_OPTIONS: { value: string; label: string }[] = [
-  { value: "1", label: "20세 미만" },
-  { value: "2", label: "21-29세" },
-  { value: "3", label: "30-34세" },
-  { value: "4", label: "35-39세" },
-  { value: "5", label: "40세 이상" },
+  { value: "1", label: "19세 이하" },
+  { value: "2", label: "20-24세" },
+  { value: "3", label: "25-29세" },
+  { value: "4", label: "30-34세" },
+  { value: "5", label: "35-39세" },
+  { value: "6", label: "40세 이상" },
 ];
 
 function Welcome() {
@@ -49,12 +52,21 @@ function Welcome() {
     window.location.reload();
   }, [selectedTeam]);
 
-  const transform = -25 * step;
+  const transform = `translateX(${-25 * step}%)`;
+  const progressWidth = `${33.3 * step}%`;
   const nextDisabled = (step === 1 && !step1Complete) || (step === 2 && !step2Complete);
 
   return (
     <div className={style.container}>
-      <div className={style.content} style={{ transform: `translateX(${transform}%)` }}>
+      <div className={style.progress}>
+        <button className={style.progress__button} onClick={goPrev}>
+          <ProgressBackIcon />
+        </button>
+        <div className={style.progress__background}>
+          <div className={style.progress__fill} style={{ width: progressWidth }}></div>
+        </div>
+      </div>
+      <div className={style.content} style={{ transform }}>
         <div className={style.step}>
           <div className={style.logo}>
             <Symbol />
@@ -65,8 +77,8 @@ function Welcome() {
           </div>
         </div>
 
-        <div className={style.step}>
-          <div className={style.step__title}>
+        <div className={style.step} style={{ padding: '0 20px' }}>
+          <div className={style.step__title} style={{ padding: '0 20px' }}>
             성별/연령대를<br/>알려주세요!
           </div>
 
@@ -110,20 +122,27 @@ function Welcome() {
           </div>
 
           <div className={style.team}>
-            { !loading && data?.teams?.map(team => {
-              const active = team === selectedTeam;
-              return (
-                <button 
-                  className={`${style.team__block} ${active && style.active}`} 
-                  onClick={() => setSelectedTeam(team)}
-                >
-                  <div className={style.team__image}>
-                    <img src={team.logoUrl ? team.logoUrl : ''} />
-                  </div>
-                  <div className={style.team__name}>{team.name}</div>
-                </button>
-              )
-            })}
+            <div className={style.team__scroll}>
+              { !loading && data?.teams?.map(team => {
+                const active = team === selectedTeam;
+                return (
+                  <button 
+                    className={`${style.team__block} ${active && style.active}`} 
+                    onClick={() => setSelectedTeam(team)}
+                  >
+                    <div className={style.team__image}>
+                      <img src={team.logoUrl ? team.logoUrl : ''} />
+                    </div>
+                    <div className={style.team__name}>{team.name}</div>
+                    { active && (
+                      <div className={style.team__check}>
+                        <TeamCheckIcon />
+                      </div>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
           </div>
           <div className={style.team_gender}>
             { GENDER_OPTIONS.map(g => { 
@@ -154,19 +173,14 @@ function Welcome() {
           )}
 
           {(step === 1 || step === 2) && (
-            <>
-              <button className={style.secondary} onClick={goPrev}>
-                이전
-              </button>
-              <button className={style.primary} onClick={goNext} disabled={nextDisabled}>
-                다음
-              </button>
-            </>
+            <button className={style.primary} onClick={goNext} disabled={nextDisabled}>
+              다음
+            </button>
           )}
 
           {step === 3 && (
             <button className={style.primary} onClick={goMain}>
-              메인으로
+              입장하기
             </button>
           )}
         </div>
