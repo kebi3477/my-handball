@@ -3,10 +3,10 @@ import styles from "./Main.module.scss";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useRanking } from "@/hooks/useRanking";
 import { useMyTeam } from "@/hooks/useMyTeam";
-import { DEFAULT_SEASON_YEAR, SEASON_YEARS, SEASON_LABELS } from "@/constants/schedule";
+import { DEFAULT_SEASON_YEAR } from "@/constants/schedule";
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
-import { shortTeamName, toGameDate } from "@/utils/common";
+import { getCardDateLabel, toGameDate } from "@/utils/common";
 
 function pickIndex(list: { date: Date }[], now = Date.now()) {
   let best = -1;
@@ -29,7 +29,7 @@ type SlideItem = {
   isMyTeam: boolean;
 };
 
-function Logo({ src, alt }: { src: string | null; alt: string }) {
+function Logo({ src, alt }: { src: string | null | undefined; alt: string }) {
   if (!src) return <div className={styles.logoFallback} aria-label={alt} />;
   return <img className={styles.logo} src={src} alt={alt} loading="lazy" />;
 }
@@ -58,7 +58,7 @@ export default function Main() {
         all.push({
           id: `${d.dateISO ?? d.dateLabel}-${g.home.name}-${g.away.name}-${g.time ?? ""}`,
           date: dt,
-          dateLabel: d.dateLabel,
+          dateLabel: getCardDateLabel(dt),
           game: g,
           isMyTeam: isMine,
         });
@@ -78,12 +78,12 @@ export default function Main() {
     const idx = pickIndex(slides);
     const el = itemRefs.current[idx];
     if (el) {
-      const left = el.offsetLeft - 12; // 패딩 보정
+      const left = el.offsetLeft - 12;
       railRef.current.scrollTo({ left, behavior: "auto" });
     }
   }, [slides]);
 
-  const [rankGender, setRankGender] = useState<Gender | "">(myTeamGender || "W");
+  const [rankGender, setRankGender] = useState<Gender | "">(myTeamGender || "M");
   const [rankSeason, setRankSeason] = useState<string>(DEFAULT_SEASON_YEAR);
 
   const {
@@ -96,16 +96,15 @@ export default function Main() {
     type: "1",
   });
 
+  const topRank = [2, 1, 3].map((r) => ranking?.items.find((item) => item.rank === r))
+  const otherRank = ranking?.items.filter(item => item.rank > 3);
+  
   return (
     <div className={styles.page}>
       <section className={styles.top} aria-label="가까운 경기">
-        <header className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>가까운 경기</h2>
-          {myTeamName ? (
-            <span className={styles.badge}>MY: {myTeamName}</span>
-          ) : (
-            <span className={styles.badgeMuted}>전체 경기</span>
-          )}
+        <header className={styles.header}>
+          <h2 className={styles.header__title}>가까운 경기</h2>
+          <button className={styles.header__button}>{myTeam ? `${myTeamName} 일정` : '전체 일정'}</button>
         </header>
 
         {loading && <p className={styles.state}>불러오는 중…</p>}
@@ -126,31 +125,32 @@ export default function Main() {
                     if (el) itemRefs.current[i] = el;
                   }}
                 >
-                  <div className={styles.cardHeader}>
-                    <div className={styles.dateBadge}>{s.dateLabel}</div>
-                    {s.isMyTeam && <div className={styles.myTag}>MY</div>}
+                  <div className={styles.card__header}>
+                    <div className={styles.card__badge}>Closed</div>
                   </div>
 
-                  <div className={styles.cardGrid}>
-                    <div className={styles.sideCol}>
+                  <div className={styles.card__info}>
+                    <div className={styles.timeline}>
+                      {s.dateLabel}
+                    </div>
+                    {g.venue && <div className={styles.venue}>{g.venue}</div>}
+                  </div>
+
+                  <div className={styles.card__grid}>
+                    <div className={styles.card__grid__side}>
                       <Logo src={g.home.logoUrl} alt={`${g.home.name} 로고`} />
-                      <div className={styles.teamName} title={g.home.name}>
+                      <div className={styles.team} title={g.home.name}>
                         {g.home.name}
                       </div>
                     </div>
 
-                    <div className={styles.centerCol}>
+                    <div className={styles.card__grid__center}>
                       <div className={styles.score}>{g.scoreText ?? "- : -"}</div>
-                      <div className={styles.timeLine}>
-                        {s.dateLabel.replace(/\s*\(.+\)\s*/g, "")}
-                        {g.time ? ` ${g.time}` : ""}
-                      </div>
-                      {g.venue && <div className={styles.venue}>{g.venue}</div>}
                     </div>
 
-                    <div className={styles.sideCol}>
+                    <div className={styles.card__grid__side}>
                       <Logo src={g.away.logoUrl} alt={`${g.away.name} 로고`} />
-                      <div className={styles.teamName} title={g.away.name}>
+                      <div className={styles.team} title={g.away.name}>
                         {g.away.name}
                       </div>
                     </div>
@@ -163,47 +163,28 @@ export default function Main() {
       </section>
 
       <section className={styles.bottom} aria-label="팀 랭킹">
-        <header className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>
-            {rankGender === "M" ? "남자부" : "여자부"} 랭킹
+        <header className={styles.header}>
+          <h2 className={styles.header__title}>
+            팀 순위
           </h2>
 
-          <div className={styles.rankControls}>
-            <div className={styles.seg}>
-              <button
-                type="button"
-                className={`${styles.segBtn} ${rankGender === "W" ? styles.segActive : ""}`}
-                aria-pressed={rankGender === "W"}
-                onClick={() => setRankGender("W")}
-              >
-                여자부
-              </button>
-              <button
-                type="button"
-                className={`${styles.segBtn} ${rankGender === "M" ? styles.segActive : ""}`}
-                aria-pressed={rankGender === "M"}
-                onClick={() => setRankGender("M")}
-              >
-                남자부
-              </button>
-            </div>
-
-            <label className={styles.visuallyHidden} htmlFor="season-select">
-              시즌 선택
-            </label>
-            <select
-              id="season-select"
-              className={styles.seasonSelect}
-              value={rankSeason}
-              onChange={(e) => setRankSeason(e.target.value)}
-              aria-label="시즌 선택"
+          <div className={styles.seg}>
+            <button
+              type="button"
+              className={`${styles.seg__button} ${rankGender === "M" ? styles.active : ""}`}
+              aria-pressed={rankGender === "M"}
+              onClick={() => setRankGender("M")}
             >
-              {SEASON_YEARS.map((y) => (
-                <option key={y} value={y}>
-                  {SEASON_LABELS[y]}
-                </option>
-              ))}
-            </select>
+              남자부
+            </button>
+            <button
+              type="button"
+              className={`${styles.seg__button} ${rankGender === "W" ? styles.segActive : ""}`}
+              aria-pressed={rankGender === "W"}
+              onClick={() => setRankGender("W")}
+            >
+              여자부
+            </button>
           </div>
         </header>
 
@@ -214,58 +195,48 @@ export default function Main() {
         )}
 
         {!rankLoading && !rankErr && ranking && ranking.items.length > 1 && (
-          <div className={styles.rankWrap}>
-            <table className={styles.rankTable}>
-              <thead>
-                <tr>
-                  <th className={styles.thRank}>순위</th>
-                  <th className={styles.thTeam}>팀</th>
-                  <th>경기</th>
-                  <th>승점</th>
-                  <th>승</th>
-                  <th>무</th>
-                  <th>패</th>
-                  <th>득</th>
-                  <th>실</th>
-                  <th>득실</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ranking.items.map((row) => {
-                  const isMine = myTeamName && row.team.name.includes(myTeamName);
-                  return (
-                    <tr key={row.team.name} className={isMine ? styles.rowMyTeam : ""}>
-                      <td className={styles.tdRank}>{row.rank}</td>
-                      <td className={styles.tdTeam}>
-                        {row.team.logoUrl ? (
-                          <img
-                            className={styles.teamLogoSm}
-                            src={row.team.logoUrl}
-                            alt={`${row.team.name} 로고`}
-                            loading="lazy"
-                          />
-                        ) : (
-                          <span className={styles.teamLogoFallbackSm} aria-hidden />
-                        )}
-                        <span className={styles.teamText} title={row.team.name}>
-                          {shortTeamName(row.team.name)}
-                        </span>
-                      </td>
-                      <td>{row.played}</td>
-                      <td className={styles.tdPoints}>{row.points}</td>
-                      <td>{row.wins}</td>
-                      <td>{row.draws}</td>
-                      <td>{row.losses}</td>
-                      <td>{row.goalsFor}</td>
-                      <td>{row.goalsAgainst}</td>
-                      <td className={row.goalDiff >= 0 ? styles.pos : styles.neg}>
-                        {row.goalDiff}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className={styles.rank}>
+            <div className={styles.rank__top}>
+              { topRank && topRank.map(r => (
+                <div className={styles.rank__top__wrap}>
+                  <div className={styles.rank__top__title}>
+                    {r?.rank}위
+                  </div>
+                  <div className={styles.rank__top__card}>
+                    <div className={styles.rank__top__card__image}>
+                      <img src={r?.team.logoUrl ?? ''} alt={`${r?.team.name} 로고`} />
+                    </div> 
+                    <div className={styles.rank__top__card__name}>
+                      {r?.team.name}
+                    </div>
+                    <div className={styles.rank__top__card__point}>
+                      {r?.points}점
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className={styles.rank__scroll}>
+              { otherRank?.map((r) => (
+                <div className={styles.rank__item}>
+                  <div className={styles.rank__title}>
+                    {r.rank}위
+                  </div>
+
+                  <div className={styles.rank__card}>
+                    <div className={styles.rank__card__image}>
+                      <img src={r?.team.logoUrl ?? ''} alt={`${r?.team.name} 로고`} />
+                    </div> 
+                    <div className={styles.rank__card__name}>
+                      {r?.team.name}
+                    </div>
+                    <div className={styles.rank__card__point}>
+                      {r?.points}점
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </section>
