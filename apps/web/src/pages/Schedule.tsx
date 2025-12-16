@@ -74,7 +74,7 @@ function Schedule() {
   const [season, setSeason] = useState<SeasonKey>(DEFAULT_SEASON_YEAR);
   const leagueType = "1";
 
-  const { data, loading, err } = useSchedule({ gender, season, type: leagueType });
+  const { data, loading, error } = useSchedule({ gender, season, type: leagueType });
   const [query, setQuery] = useState("");
 
   const filteredDays = useMemo(() => {
@@ -167,8 +167,8 @@ function Schedule() {
       </header>
 
       {loading && <p className={styles.state}>불러오는 중…</p>}
-      {err && <p className={styles.stateError}>에러: {err}</p>}
-      {!loading && !err && filteredDays.length === 0 && <p className={styles.state}>조건에 맞는 경기가 없어요.</p>}
+      {error && <p className={styles.stateError}>에러: {error}</p>}
+      {!loading && !error && filteredDays.length === 0 && <p className={styles.state}>조건에 맞는 경기가 없어요.</p>}
 
       <main className={styles.list} role="list">
         {filteredDays.map((d) => (

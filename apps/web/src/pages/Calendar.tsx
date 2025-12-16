@@ -25,7 +25,7 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
 
   const gender: Gender | "" = myTeam?.gender ?? "";
 
-  const { data, loading, err } = useSchedule({
+  const { data, loading, error } = useSchedule({
     gender,
     season,
     type: leagueType,
@@ -143,7 +143,7 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
           )}
         </div>
 
-        {err && <p className={styles.stateError}>에러: {err}</p>}
+        {error && <p className={styles.stateError}>에러: {error}</p>}
         {loading && <p className={styles.state}>불러오는 중…</p>}
       </header>
 
@@ -209,10 +209,10 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
           ))}
         </div>
 
-        {!loading && !err && myTeam && byDate.size === 0 && (
+        {!loading && !error && myTeam && byDate.size === 0 && (
           <p className={styles.state}>이 달에는 마이팀 경기가 없어요.</p>
         )}
-        {!loading && !err && !myTeam && (
+        {!loading && !error && !myTeam && (
           <p className={styles.state}>먼저 마이팀을 설정하면 경기 일정이 보입니다.</p>
         )}
       </main>
