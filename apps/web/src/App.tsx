@@ -25,7 +25,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className={styles.app}>
-        <Header onOpenMenu={() => setMenuOpen(true)} />
+        <Header />
 
         <div className={styles.app__page}>
           <Routes>

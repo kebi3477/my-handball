@@ -1,54 +1,18 @@
 .header {
-  position: sticky;
   height: var(--app-header-height);
-  top: 0;
-  z-index: 20;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  background: color-mix(in oklab, var(--bg) 85%, transparent);
-  backdrop-filter: saturate(180%) blur(10px);
-  border-bottom: 1px solid var(--border);
-}
+  background-color: var(--color-background);
+  padding: 0 20px;
 
-.titleLink {
-  display: block;
-  width: 100%;
-  border-radius: 12px;
-  color: var(--text);
-  text-decoration: none;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-}
+  &__icon {
+    width: 48px;
+    height: 100%;
+    padding: 10px;
 
-.title {
-  justify-self: center;
-  margin: 0;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: -0.2px;
-}
-
-.menuButton {
-  justify-self: end;
-  width: 38px; height: 32px;
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  cursor: pointer;
-  box-shadow: var(--shadow);
-}
-
-.bar {
-  display: block;
-  width: 18px; height: 2px;
-  background: var(--text);
-  margin: 0 auto;
-  border-radius: 2px;
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
 }
