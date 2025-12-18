@@ -203,7 +203,10 @@ export default function Main() {
           </div>
         </header>
 
-        {rankLoading && <SkeletonRank />}
+        {rankLoading && (
+          <SkeletonRank />
+        )}
+
         {!rankLoading && !rankError && (!ranking || ranking.items.length <= 1) && (
           <div className={styles.rank__empty} role="status" aria-live="polite">
             <div className={styles.rank__empty__badge}>랭킹</div>

@@ -1,0 +1,139 @@
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.loading__day {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.loading__date {
+  width: 110px;
+  height: 16px;
+  border-radius: 10px;
+  @extend .loading__block;
+}
+
+.loading__cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+
+  @media (min-width: 560px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.loading__card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.loading__grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 1fr;
+  gap: 12px;
+  align-items: center;
+
+  @media (min-width: 560px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.loading__side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.loading__center {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.loading__logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  @extend .loading__block;
+}
+
+.loading__line {
+  width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  @extend .loading__block;
+}
+
+.loading__score {
+  width: 90px;
+  height: 24px;
+  border-radius: 10px;
+  @extend .loading__block;
+}
+
+.loading__meta {
+  display: flex;
+  gap: 6px;
+}
+
+.loading__chip {
+  width: 52px;
+  height: 14px;
+  border-radius: 999px;
+  @extend .loading__block;
+}
+
+.loading__broadcast {
+  display: flex;
+  gap: 6px;
+}
+
+.loading__pill {
+  width: 64px;
+  height: 14px;
+  border-radius: 999px;
+  @extend .loading__block;
+}
+
+.loading__block {
+  position: relative;
+  overflow: hidden;
+  background: #eef1f5;
+}
+
+.loading__block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}

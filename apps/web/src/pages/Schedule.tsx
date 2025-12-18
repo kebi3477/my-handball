@@ -10,6 +10,8 @@ import {
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
 import type { SeasonKey } from "@/constants/schedule";
+import SkeletonSchedule from "@/components/skeletons/SkeletonSchedule";
+import Error from "@/components/Error";
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
   if (!src) return <div className={styles.logoFallback} aria-label={alt} />;
@@ -92,6 +94,10 @@ function Schedule() {
       ? GENDER_LABEL[gender]
       : "전체";
 
+  if (error) {
+    return <Error />
+  }
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -167,8 +173,10 @@ function Schedule() {
         </div>
       </header>
 
-      {loading && <p className={styles.state}>불러오는 중…</p>}
-      {error && <p className={styles.stateError}>에러: {error}</p>}
+      {loading && (
+        <SkeletonSchedule />)
+      }
+      
       {!loading && !error && filteredDays.length === 0 && (
         <div className={styles.empty} role="status" aria-live="polite">
           <div className={styles.empty__badge}>일정</div>
