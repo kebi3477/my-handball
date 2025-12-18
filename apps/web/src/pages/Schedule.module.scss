@@ -2,7 +2,7 @@
   min-height: 100dvh;
   background: var(--color-background-sub);
   color: var(--color-text);
-  padding: 16px 20px 32px;
+  padding: 14px 20px;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -21,9 +21,10 @@
   }
 
   &__title {
-    font-weight: 800;
-    font-size: 20px;
-    letter-spacing: -0.2px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 140%;
   }
 
   &__actions {
