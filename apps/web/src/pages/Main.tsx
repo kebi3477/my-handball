@@ -7,6 +7,8 @@ import { DEFAULT_SEASON_YEAR } from "@/constants/schedule";
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
 import { getCardDateLabel, toGameDate } from "@/utils/common";
+import SkeletonCard from "@/components/Skeletons/SkeletonCard";
+import Error from "@/components/Error";
 
 function pickIndex(list: { date: Date }[], now = Date.now()) {
   let best = -1;
@@ -89,7 +91,7 @@ export default function Main() {
   const {
     data: ranking,
     loading: rankLoading,
-    error: rankErr,
+    error: rankError,
   } = useRanking({
     gender: rankGender,
     season: rankSeason,
@@ -98,6 +100,10 @@ export default function Main() {
 
   const topRank = [2, 1, 3].map((r) => ranking?.items.find((item) => item.rank === r))
   const otherRank = ranking?.items.filter(item => item.rank > 3);
+
+  if (error || rankError) {
+    return <Error />
+  }
   
   return (
     <div className={styles.page}>
@@ -107,8 +113,11 @@ export default function Main() {
           <button className={styles.header__button}>{myTeam ? `${myTeamName} 일정` : '전체 일정'}</button>
         </header>
 
-        {loading && <p className={styles.state}>불러오는 중…</p>}
-        {error && <p className={styles.stateError}>에러: {error}</p>}
+        {loading && (
+          <SkeletonCard />
+        )}
+
+
         {!loading && !error && slides.length === 0 && (
           <p className={styles.state}>앞으로 예정된 경기가 없어요.</p>
         )}
@@ -189,12 +198,11 @@ export default function Main() {
         </header>
 
         {rankLoading && <p className={styles.state}>랭킹 불러오는 중…</p>}
-        {rankErr && <p className={styles.stateError}>에러: {rankErr}</p>}
-        {!rankLoading && !rankErr && (!ranking || ranking.items.length <= 1) && (
+        {!rankLoading && (!ranking || ranking.items.length <= 1) && (
           <p className={styles.state}>랭킹 데이터가 없어요.</p>
         )}
 
-        {!rankLoading && !rankErr && ranking && ranking.items.length > 1 && (
+        {!rankLoading && !rankError && ranking && ranking.items.length > 1 && (
           <div className={styles.rank}>
             <div className={styles.rank__top}>
               { topRank && topRank.map(r => (

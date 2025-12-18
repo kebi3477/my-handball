@@ -1,0 +1,109 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-background);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 60px 24px 40px;
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    svg {
+      width: 72px;
+      height: 72px;
+    }
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 480px;
+    background-color: var(--color-white);
+    border-radius: 18px;
+    border: 1px solid #efefef;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.04);
+    padding: 28px 24px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+
+    &__label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-main);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    &__title {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.3;
+      color: var(--color-black);
+      margin: 0;
+    }
+
+    &__message {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.6;
+      white-space: pre-line;
+      color: rgba(0, 0, 0, 0.6);
+      margin: 0;
+    }
+  }
+
+  .actions {
+    width: 100%;
+    max-width: 480px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .button {
+    width: 100%;
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    font-size: 16px;
+    font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .primary {
+    background-color: var(--color-main);
+    color: var(--color-white);
+    box-shadow: 0 12px 24px rgba(0, 104, 255, 0.18);
+  }
+
+  .secondary {
+    background-color: var(--color-gray-light);
+    color: var(--color-white);
+  }
+}

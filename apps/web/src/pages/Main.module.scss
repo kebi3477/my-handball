@@ -1,9 +1,8 @@
 .page {
-  height: fit-content;
-  min-height: calc(100dvh - var(--app-menu-height) - var(--app-header-height));
+  height: 100%;
   background: var(--color-background-sub);
   color: var(--color-text);
-  padding-bottom: var(--app-menu-height);
+  overflow-y: auto;
 }
 
 .top, .bottom {
