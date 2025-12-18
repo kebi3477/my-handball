@@ -119,7 +119,13 @@ export default function Main() {
         )}
 
         {!loading && !error && slides.length === 0 && (
-          <p className={styles.state}>앞으로 예정된 경기가 없어요.</p>
+          <div className={styles.rail__empty} role="status" aria-live="polite">
+            <div className={styles.rail__empty__badge}>일정</div>
+            <div className={styles.rail__empty__text}>
+              앞으로 예정된 경기가 없어요.<br />
+              다른 시즌을 확인해 보세요.
+            </div>
+          </div>
         )}
 
         {!loading && !error && slides.length > 0 && (
@@ -188,7 +194,7 @@ export default function Main() {
             </button>
             <button
               type="button"
-              className={`${styles.seg__button} ${rankGender === "W" ? styles.segActive : ""}`}
+              className={`${styles.seg__button} ${rankGender === "W" ? styles.active : ""}`}
               aria-pressed={rankGender === "W"}
               onClick={() => setRankGender("W")}
             >
@@ -198,8 +204,14 @@ export default function Main() {
         </header>
 
         {rankLoading && <SkeletonRank />}
-        {!rankLoading && (!ranking || ranking.items.length <= 1) && (
-          <p className={styles.state}>랭킹 데이터가 없어요.</p>
+        {!rankLoading && !rankError && (!ranking || ranking.items.length <= 1) && (
+          <div className={styles.rank__empty} role="status" aria-live="polite">
+            <div className={styles.rank__empty__badge}>랭킹</div>
+            <div className={styles.rank__empty__text}>
+              아직 불러올 랭킹 데이터가 없어요.<br />
+              시즌/성별을 바꿔 다시 확인해 주세요.
+            </div>
+          </div>
         )}
 
         {!rankLoading && !rankError && ranking && ranking.items.length > 1 && (
