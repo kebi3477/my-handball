@@ -1,7 +1,12 @@
 import { useMemo, useState } from "react";
 import styles from "./Schedule.module.scss";
 import { useSchedule } from "@/hooks/useSchedule";
-import { DEFAULT_SEASON_YEAR, GENDER_LABEL, SEASON_LABELS, SEASON_YEARS } from "@/constants/schedule";
+import {
+  DEFAULT_SEASON_YEAR,
+  GENDER_LABEL,
+  SEASON_LABELS,
+  SEASON_YEARS,
+} from "@/constants/schedule";
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
 import type { SeasonKey } from "@/constants/schedule";
@@ -14,9 +19,9 @@ function Logo({ src, alt }: { src: string | null; alt: string }) {
 function BroadcastChips({ items }: { items: string[] }) {
   if (!items?.length) return null;
   return (
-    <div className={styles.chips} aria-label="방송">
+    <div className={styles.card__chips} aria-label="방송">
       {items.map((b, i) => (
-        <span className={styles.chip} key={`${b}-${i}`}>
+        <span className={styles.card__chip} key={`${b}-${i}`}>
           {b}
         </span>
       ))}
@@ -24,44 +29,31 @@ function BroadcastChips({ items }: { items: string[] }) {
   );
 }
 
-function Score({ text }: { text: string | null }) {
-  return <div className={styles.score}>{text ?? "- : -"}</div>;
-}
-
 function GameCard({ g }: { g: GameItem }) {
   return (
     <article className={styles.card} role="listitem">
-      <div className={styles.teams}>
-        <div className={styles.team}>
+      <div className={styles.card__grid}>
+        <div className={styles.card__side}>
           <Logo src={g.home.logoUrl} alt={`${g.home.name} 로고`} />
-          <div className={styles.teamName} title={g.home.name}>
+          <div className={styles.card__team} title={g.home.name}>
             {g.home.name}
           </div>
         </div>
 
-        <Score text={g.scoreText} />
+        <div className={styles.card__center}>
+          <div className={styles.card__score}>{g.scoreText ?? "- : -"}</div>
+          <div className={styles.card__meta}>
+            {g.time && <div className={styles.card__meta_item}>{g.time}</div>}
+            {g.venue && <div className={styles.card__meta_item}>{g.venue}</div>}
+          </div>
+        </div>
 
-        <div className={styles.team} data-align="right">
+        <div className={styles.card__side} data-align="right">
           <Logo src={g.away.logoUrl} alt={`${g.away.name} 로고`} />
-          <div className={styles.teamName} title={g.away.name}>
+          <div className={styles.card__team} title={g.away.name}>
             {g.away.name}
           </div>
         </div>
-      </div>
-
-      <div className={styles.meta}>
-        {g.time && (
-          <div className={styles.metaItem} aria-label="경기 시작">
-            <span className={styles.metaIcon}>🕒</span>
-            <span>{g.time}</span>
-          </div>
-        )}
-        {g.venue && (
-          <div className={styles.metaItem} aria-label="경기장">
-            <span className={styles.metaIcon}>📍</span>
-            <span>{g.venue}</span>
-          </div>
-        )}
       </div>
 
       <BroadcastChips items={g.broadcast} />
@@ -72,39 +64,45 @@ function GameCard({ g }: { g: GameItem }) {
 function Schedule() {
   const [gender, setGender] = useState<Gender | "">("");
   const [season, setSeason] = useState<SeasonKey>(DEFAULT_SEASON_YEAR);
+  const [query, setQuery] = useState("");
   const leagueType = "1";
 
-  const { data, loading, error } = useSchedule({ gender, season, type: leagueType });
-  const [query, setQuery] = useState("");
+  const { data, loading, error } = useSchedule({
+    gender,
+    season,
+    type: leagueType,
+  });
 
   const filteredDays = useMemo(() => {
     if (!data) return [];
     const q = query.trim().toLowerCase();
-    const pred = (g: GameItem) => {
+    const match = (g: GameItem) => {
       const text = `${g.home.name} ${g.away.name} ${g.venue ?? ""} ${(g.broadcast ?? []).join(" ")}`.toLowerCase();
       if (q && !text.includes(q)) return false;
       return true;
     };
     return data.days
-      .map((d) => ({ ...d, games: d.games.filter(pred) }))
+      .map((d) => ({ ...d, games: d.games.filter(match) }))
       .filter((d) => d.games.length > 0);
   }, [data, query]);
 
-  const titleGender = data ? GENDER_LABEL[data.leagueGender] : GENDER_LABEL[gender];
+  const titleGender = data
+    ? GENDER_LABEL[data.leagueGender]
+    : gender
+      ? GENDER_LABEL[gender]
+      : "전체";
 
   return (
-    <div className={styles.app}>
+    <div className={styles.page}>
       <header className={styles.header}>
-        <div className={styles.titleRow}>
-          <h1 className={styles.title}>
-            {titleGender} 일정
-          </h1>
+        <div className={styles.header__top}>
+          <h1 className={styles.header__title}>{titleGender} 일정</h1>
 
-          <label className={styles.visuallyHidden} htmlFor="season-select">시즌 선택</label>
-          <div className={styles.seasonBox}>
+          <div className={styles.header__actions}>
+            <label className={styles.visuallyHidden} htmlFor="season-select">시즌 선택</label>
             <select
               id="season-select"
-              className={styles.seasonSelect}
+              className={styles.select}
               value={season}
               onChange={(e) => setSeason(e.target.value as SeasonKey)}
               aria-label="시즌 선택"
@@ -113,50 +111,53 @@ function Schedule() {
                 <option key={y} value={y}>{SEASON_LABELS[y]}</option>
               ))}
             </select>
+
+            {data?.url && (
+              <a
+                className={styles.header__link}
+                href={data.url}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="공식 일정 페이지"
+              >
+                공식페이지 ↗
+              </a>
+            )}
           </div>
-          {data?.url && (
-            <a
-              className={styles.link}
-              href={data.url}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="공식 일정 페이지"
-            >
-              공식페이지 ↗
-            </a>
-          )}
         </div>
 
-        <div className={styles.tabs} role="tablist" aria-label="성별 선택">
+        <div className={styles.seg} role="tablist" aria-label="성별 선택">
           <button
+            type="button"
             role="tab"
             aria-selected={gender === ""}
-            className={`${styles.tab} ${gender === "" ? styles.tabActive : ""}`}
+            className={`${styles.seg__button} ${gender === "" ? styles.active : ""}`}
             onClick={() => setGender("")}
           >
             전체
           </button>
           <button
+            type="button"
             role="tab"
             aria-selected={gender === "W"}
-            className={`${styles.tab} ${gender === "W" ? styles.tabActive : ""}`}
+            className={`${styles.seg__button} ${gender === "W" ? styles.active : ""}`}
             onClick={() => setGender("W")}
           >
             여자부
           </button>
           <button
+            type="button"
             role="tab"
             aria-selected={gender === "M"}
-            className={`${styles.tab} ${gender === "M" ? styles.tabActive : ""}`}
+            className={`${styles.seg__button} ${gender === "M" ? styles.active : ""}`}
             onClick={() => setGender("M")}
           >
             남자부
           </button>
         </div>
 
-        <div className={styles.controls}>
+        <div className={styles.search}>
           <input
-            className={styles.search}
             type="search"
             placeholder="팀/장소/방송 검색"
             value={query}
@@ -168,23 +169,33 @@ function Schedule() {
 
       {loading && <p className={styles.state}>불러오는 중…</p>}
       {error && <p className={styles.stateError}>에러: {error}</p>}
-      {!loading && !error && filteredDays.length === 0 && <p className={styles.state}>조건에 맞는 경기가 없어요.</p>}
+      {!loading && !error && filteredDays.length === 0 && (
+        <div className={styles.empty} role="status" aria-live="polite">
+          <div className={styles.empty__badge}>일정</div>
+          <div className={styles.empty__text}>
+            조건에 맞는 경기가 없어요.<br />
+            검색어를 지우거나 다른 시즌을 선택해 주세요.
+          </div>
+        </div>
+      )}
 
-      <main className={styles.list} role="list">
-        {filteredDays.map((d) => (
-          <section key={d.dateISO ?? d.dateLabel} className={styles.daySection}>
-            <div className={styles.stickyDate} aria-label="날짜">
-              <span className={styles.dateBig}>{d.dateLabel}</span>
-              {d.dateISO && <span className={styles.dateISO}>{d.dateISO}</span>}
-            </div>
-            <div className={styles.cards}>
-              {d.games.map((g, i) => (
-                <GameCard key={`${d.dateISO}-${i}-${g.home.name}-${g.away.name}`} g={g} />
-              ))}
-            </div>
-          </section>
-        ))}
-      </main>
+      {!loading && !error && filteredDays.length > 0 && (
+        <main className={styles.list} role="list">
+          {filteredDays.map((d) => (
+            <section key={d.dateISO ?? d.dateLabel} className={styles.day}>
+              <div className={styles.day__label} aria-label="날짜">
+                <span className={styles.day__date}>{d.dateLabel}</span>
+                {d.dateISO && <span className={styles.day__iso}>{d.dateISO}</span>}
+              </div>
+              <div className={styles.day__cards}>
+                {d.games.map((g, i) => (
+                  <GameCard key={`${d.dateISO}-${i}-${g.home.name}-${g.away.name}`} g={g} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </main>
+      )}
     </div>
   );
 }
