@@ -7,7 +7,8 @@ import { DEFAULT_SEASON_YEAR } from "@/constants/schedule";
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
 import { getCardDateLabel, toGameDate } from "@/utils/common";
-import SkeletonCard from "@/components/Skeletons/SkeletonCard";
+import SkeletonCard from "@/components/skeletons/SkeletonCard";
+import SkeletonRank from "@/components/skeletons/SkeletonRank";
 import Error from "@/components/Error";
 
 function pickIndex(list: { date: Date }[], now = Date.now()) {
@@ -117,7 +118,6 @@ export default function Main() {
           <SkeletonCard />
         )}
 
-
         {!loading && !error && slides.length === 0 && (
           <p className={styles.state}>앞으로 예정된 경기가 없어요.</p>
         )}
@@ -197,7 +197,7 @@ export default function Main() {
           </div>
         </header>
 
-        {rankLoading && <p className={styles.state}>랭킹 불러오는 중…</p>}
+        {rankLoading && <SkeletonRank />}
         {!rankLoading && (!ranking || ranking.items.length <= 1) && (
           <p className={styles.state}>랭킹 데이터가 없어요.</p>
         )}
