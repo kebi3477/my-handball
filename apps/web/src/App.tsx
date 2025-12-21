@@ -8,6 +8,7 @@ import styles from "./App.module.scss";
 import Main from "./pages/Main";
 import Schedule from "./pages/Schedule";
 import Calendar from "./pages/Calendar";
+import MyPage from "./pages/MyPage";
 import Welcome from "./pages/Welcome";
 import { useProfileSetup } from "./hooks/useProfileSetup";
 
@@ -32,6 +33,7 @@ export default function App() {
               <Route path="/" element={<Main />} />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/calendar" element={<Calendar />} />
+              <Route path="/my" element={<MyPage />} />
           </Routes>
         </div>
 
