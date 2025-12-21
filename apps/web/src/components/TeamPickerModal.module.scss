@@ -1,24 +1,26 @@
 /* ====== Team Picker Modal ====== */
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  z-index: 1100;
-}
+.modal {
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 1100;
+  }
 
-.modalSheet {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  width: 100%;
-  max-height: 85vh;
-  background: var(--bg);
-  border-top: 1px solid var(--border);
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 12px;
-  z-index: 1110;
-  animation: slideUp .18s ease-out;
+  &__sheet {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    width: 100%;
+    max-height: 85vh;
+    background: var(--color-white);
+    border-top: 1px solid var(--color-border);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    padding: 16px;
+    z-index: 1110;
+    animation: slideUp .18s ease-out;
+  }
 }
 
 @keyframes slideUp {
@@ -26,14 +28,27 @@
   to   { transform: translateY(0);    opacity: 1; }
 }
 
-.modalHeader {
+.header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 4px 2px 10px;
-  border-bottom: 1px solid var(--border);
-  background: color-mix(in oklab, var(--bg) 85%, transparent);
-  backdrop-filter: blur(6px);
+  padding: 4px 2px 12px;
+  border-bottom: 1px solid var(--color-border);
+
+  &__title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--color-black);
+  }
+
+  &__close {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background: var(--color-background-sub);
+    color: var(--color-text-sub);
+    cursor: pointer;
+  }
 }
-.modalTitle { font-size: 14px; }
 
 .tabs {
   display: flex;
@@ -41,36 +56,44 @@
   margin: 10px 0 12px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-}
-.tab {
-  flex: 0 0 auto;
-  padding: 10px 14px;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 600;
-  background: #111827;
-  color: #fff;
-  border: 1px solid #111827;
-  cursor: pointer;
-  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
-}
-.tab:active { transform: translateY(1px); }
-.tab:hover { background: #1f2937; }
-.tab.tabActive {
-  border: 1px solid #e5e7eb;
-  color: #374151;
-  background-color: #f9fafb;
-  box-shadow: 0 2px 8px rgba(17, 24, 39, .15);
+
+  &__tab {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--color-background-sub);
+    color: var(--color-text-sub);
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+
+    &:active { 
+      transform: translateY(1px); 
+    }
+    
+    &:hover { 
+      background: #f6f8ff; 
+      color: var(--color-black); 
+    }
+    
+    &.active {
+      border: 1px solid var(--color-main);
+      color: var(--color-white);
+      background-color: var(--color-main);
+      box-shadow: 0 6px 14px rgba(0, 104, 255, 0.18);
+    }
+  }
 }
 
-.state, .stateError {
+.state {
   text-align: center;
   padding: 10px 6px;
-  color: var(--muted);
+  color: var(--color-text-sub);
 }
-.stateError { color: #ff6b6b; }
 
-.teamGrid {
+.team {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
@@ -81,36 +104,40 @@
   @media (min-width: 560px) {
     grid-template-columns: repeat(3, 1fr);
   }
-}
 
-.teamCell {
-  display: grid;
-  grid-template-columns: 36px 1fr;
-  gap: 10px;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  cursor: pointer;
-}
-.teamCell:hover {
-  background: color-mix(in oklab, var(--card) 85%, white 15%);
-}
+  &__cell {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    background: var(--color-card);
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
 
-.teamCellLogo {
-  width: 36px; height: 36px;
-  border-radius: 8px;
-  object-fit: contain;
-  background: #fff;
-}
-.teamCellLogoFallback {
-  width: 36px; height: 36px;
-  border-radius: 8px;
-  background: #2b3947;
-  border: 1px dashed var(--border);
-}
-.teamCellName {
-  font-size: 14px; font-weight: 700; letter-spacing: -0.2px; color: #fff;
+    &:hover {
+      background: #f8faff;
+      border-color: var(--color-main);
+    }
+
+    &__logo {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    &__logo_fallback {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--color-background-sub);
+      border: 1px dashed var(--color-border);
+    }
+
+    &__name {
+      font-size: 14px; font-weight: 700; letter-spacing: -0.2px; color: var(--color-black);
+    }
+  }
 }

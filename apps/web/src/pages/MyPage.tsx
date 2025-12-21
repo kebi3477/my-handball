@@ -60,7 +60,6 @@ function MyPage() {
       <TeamPickerModal
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
-        initialGender={myTeam?.gender ?? "W"}
         onPicked={handlePicked}
       />
     </div>
