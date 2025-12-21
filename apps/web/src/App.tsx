@@ -2,7 +2,6 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Header from "./components/Header";
 import Menu from "./components/Menu";
-import SlideMenu from "./components/SlideMenu";
 import styles from "./App.module.scss";
 
 import Main from "./pages/Main";
@@ -13,8 +12,6 @@ import Welcome from "./pages/Welcome";
 import { useProfileSetup } from "./hooks/useProfileSetup";
 
 export default function App() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
   const { profileSetup } = useProfileSetup();
 
   if (!profileSetup) {
@@ -38,11 +35,6 @@ export default function App() {
         </div>
 
         <Menu />
-
-        <SlideMenu
-          isOpen={menuOpen}
-          onClose={() => setMenuOpen(false)}
-        />
       </div>
 
     </BrowserRouter>
