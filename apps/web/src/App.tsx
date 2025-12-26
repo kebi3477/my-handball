@@ -10,6 +10,7 @@ import Calendar from "./pages/Calendar";
 import MyPage from "./pages/MyPage";
 import Welcome from "./pages/Welcome";
 import { useProfileSetup } from "./hooks/useProfileSetup";
+import Ranking from "./pages/Ranking";
 
 export default function App() {
   const { profileSetup } = useProfileSetup();
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/" element={<Main />} />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/calendar" element={<Calendar />} />
+              <Route path="/ranking" element={<Ranking />} />
               <Route path="/my" element={<MyPage />} />
           </Routes>
         </div>

@@ -30,7 +30,7 @@
   &__actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
 
   &__link {
@@ -38,6 +38,35 @@
     font-size: 12px;
     font-weight: 700;
   }
+}
+
+.viewSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.viewSwitch__button {
+  width: 42px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--color-text-sub);
+}
+
+.viewSwitch__button + .viewSwitch__button {
+  border-left: 1px solid var(--color-border);
+}
+
+.viewSwitch__button[aria-pressed="true"] {
+  background: var(--color-main);
+  color: var(--color-white);
 }
 
 .seg {

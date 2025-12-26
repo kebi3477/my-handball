@@ -8,6 +8,24 @@ import type { Gender } from "@/types/team";
 import Error from "@/components/Error";
 import SkeletonCalendar from "@/components/skeletons/SkeletonCalendar";
 import { useSeason } from "@/hooks/useSeason";
+import { Link, useLocation } from "react-router-dom";
+
+const ListIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+    <rect x="3" y="3" width="10" height="2" rx="1" fill="currentColor" />
+    <rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor" />
+    <rect x="3" y="11" width="10" height="2" rx="1" fill="currentColor" />
+  </svg>
+);
+
+const CalendarIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+    <rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="1.2" />
+    <rect x="2" y="6" width="12" height="2" fill="currentColor" />
+    <path d="M6 2V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <path d="M10 2V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -18,6 +36,8 @@ type Props = {
 export default function Calendar({ leagueType = "1" }: Props) {
   const { team: myTeam } = useMyTeam();
   const { season } = useSeason();
+  const location = useLocation();
+  const isCalendar = location.pathname === "/calendar";
 
   const today = new Date();
   const [year, setYear] = useState<number>(today.getFullYear());
@@ -112,13 +132,24 @@ export default function Calendar({ leagueType = "1" }: Props) {
             </div>
           </div>
 
-          <button
-            type="button"
-            className={styles.header__sync}
-            onClick={handleSyncMyTeamCalendar}
-          >
-            일정 연동
-          </button>
+          <div className={styles.viewSwitch} role="group" aria-label="보기 전환">
+            <Link
+              to="/schedule"
+              className={styles.viewSwitch__button}
+              aria-pressed={!isCalendar}
+              aria-label="리스트 보기"
+            >
+              <ListIcon />
+            </Link>
+            <Link
+              to="/calendar"
+              className={styles.viewSwitch__button}
+              aria-pressed={isCalendar}
+              aria-label="캘린더 보기"
+            >
+              <CalendarIcon />
+            </Link>
+          </div>
         </div>
 
         <div className={styles.header__actions}>
@@ -129,6 +160,14 @@ export default function Calendar({ leagueType = "1" }: Props) {
             </div>
             <button className={styles.header__nav_btn} onClick={goNextMonth} disabled={!canNext} aria-label="다음 달">▶</button>
           </div>
+
+          <button
+            type="button"
+            className={styles.header__sync}
+            onClick={handleSyncMyTeamCalendar}
+          >
+            일정 연동
+          </button>
         </div>
 
       </header>

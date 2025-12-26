@@ -7,6 +7,24 @@ import type { Gender } from "@/types/team";
 import SkeletonSchedule from "@/components/skeletons/SkeletonSchedule";
 import Error from "@/components/Error";
 import { useSeason } from "@/hooks/useSeason";
+import { Link, useLocation } from "react-router-dom";
+
+const ListIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+    <rect x="3" y="3" width="10" height="2" rx="1" fill="currentColor" />
+    <rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor" />
+    <rect x="3" y="11" width="10" height="2" rx="1" fill="currentColor" />
+  </svg>
+);
+
+const CalendarIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+    <rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="1.2" />
+    <rect x="2" y="6" width="12" height="2" fill="currentColor" />
+    <path d="M6 2V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <path d="M10 2V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
   return (
@@ -70,6 +88,8 @@ function Schedule() {
   const { season } = useSeason();
   const [query, setQuery] = useState("");
   const leagueType = "1";
+  const location = useLocation();
+  const isSchedule = location.pathname === "/schedule";
 
   const { data, loading, error } = useSchedule({
     gender,
@@ -107,17 +127,24 @@ function Schedule() {
           <h1 className={styles.header__title}>{titleGender} 일정</h1>
 
           <div className={styles.header__actions}>
-            {data?.url && (
-              <a
-                className={styles.header__link}
-                href={data.url}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="공식 일정 페이지"
+            <div className={styles.viewSwitch} role="group" aria-label="보기 전환">
+              <Link
+                to="/schedule"
+                className={styles.viewSwitch__button}
+                aria-pressed={isSchedule}
+                aria-label="리스트 보기"
               >
-                공식페이지 ↗
-              </a>
-            )}
+                <ListIcon />
+              </Link>
+              <Link
+                to="/calendar"
+                className={styles.viewSwitch__button}
+                aria-pressed={!isSchedule}
+                aria-label="캘린더 보기"
+              >
+                <CalendarIcon />
+              </Link>
+            </div>
           </div>
         </div>
 
