@@ -122,15 +122,26 @@
       border-color: var(--color-main);
     }
 
-    &__logo {
+    &__logo_wrap {
       width: 36px; height: 36px;
       border-radius: 8px;
+      background: var(--color-logo-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px var(--color-border);
+    }
+
+    &__logo {
+      width: 100%;
+      height: 100%;
       object-fit: contain;
-      background: #fff;
     }
 
     &__logo_fallback {
-      width: 36px; height: 36px;
+      width: 100%;
+      height: 100%;
       border-radius: 8px;
       background: var(--color-background-sub);
       border: 1px dashed var(--color-border);

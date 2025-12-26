@@ -33,8 +33,15 @@ type SlideItem = {
 };
 
 function Logo({ src, alt }: { src: string | null | undefined; alt: string }) {
-  if (!src) return <div className={styles.logoFallback} aria-label={alt} />;
-  return <img className={styles.logo} src={src} alt={alt} loading="lazy" />;
+  return (
+    <div className={styles.logoWrapper}>
+      {src ? (
+        <img className={styles.logo} src={src} alt={alt} loading="lazy" />
+      ) : (
+        <div className={styles.logoFallback} aria-label={alt} />
+      )}
+    </div>
+  );
 }
 
 export default function Main() {

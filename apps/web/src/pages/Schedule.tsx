@@ -14,8 +14,15 @@ import SkeletonSchedule from "@/components/skeletons/SkeletonSchedule";
 import Error from "@/components/Error";
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
-  if (!src) return <div className={styles.logoFallback} aria-label={alt} />;
-  return <img className={styles.logo} src={src} alt={alt} loading="lazy" />;
+  return (
+    <div className={styles.logoWrapper}>
+      {src ? (
+        <img className={styles.logo} src={src} alt={alt} loading="lazy" />
+      ) : (
+        <div className={styles.logoFallback} aria-label={alt} />
+      )}
+    </div>
+  );
 }
 
 function BroadcastChips({ items }: { items: string[] }) {

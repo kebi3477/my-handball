@@ -176,10 +176,6 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 10px;
-
-    @media (min-width: 560px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
   }
 }
 
@@ -283,17 +279,26 @@
 }
 
 .logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logoWrapper {
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  object-fit: contain;
-  background: #fff;
+  background: var(--color-logo-bg);
   box-shadow: inset 0 0 0 1px var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .logoFallback {
-  width: 48px;
-  height: 48px;
+  width: 100%;
+  height: 100%;
   border-radius: 12px;
   background: #efefef;
   border: 1px dashed var(--color-border);

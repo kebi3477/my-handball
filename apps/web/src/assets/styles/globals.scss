@@ -29,9 +29,12 @@
   --color-success-bg: #E6FFEC;
   --color-warning: #8A5A00;
   --color-warning-bg: #FFF6E6;
+  
+  --color-logo-bg: #FFFFFF;
 
   --app-header-height: 66px;
   --app-menu-height: 80px;
+  --app-max-width: 510px;
   color-scheme: light;
 }
 
@@ -68,6 +71,8 @@
     --color-warning: #F3C76B;
     --color-warning-bg: #2D2412;
 
+    --color-logo-bg: #FFFFFF;
+
     color-scheme: dark;
   }
 }
@@ -85,11 +90,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  justify-content: center;
+  background: var(--color-background);
 }
 
 #root {
   min-height: 100vh;
   height: 100vh;
+  width: min(100vw, var(--app-max-width));
+  margin: 0 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
 }
 
 button {

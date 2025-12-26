@@ -69,11 +69,13 @@ export default function TeamPickerModal({
                 onClick={() => onPicked({ ...t, gender })}
                 type="button"
               >
-                {t.logoUrl ? (
-                  <img src={t.logoUrl} alt={`${t.name} 로고`} className={styles.team__cell__logo} />
-                ) : (
-                  <div className={styles.team__cell__logo_fallback} />
-                )}
+                <span className={styles.team__cell__logo_wrap}>
+                  {t.logoUrl ? (
+                    <img src={t.logoUrl} alt={`${t.name} 로고`} className={styles.team__cell__logo} />
+                  ) : (
+                    <div className={styles.team__cell__logo_fallback} />
+                  )}
+                </span>
                 <span className={styles.team__cell__name}>{t.name}</span>
               </button>
             ))}

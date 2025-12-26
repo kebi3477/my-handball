@@ -1,11 +1,13 @@
 .menu {
-  width: 100%;
+  width: min(100vw, var(--app-max-width));
   height: var(--app-menu-height);
   background-color: var(--color-white);
   display: flex;
   align-items: center;
   position: fixed;
   bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 5;
 
   &__item {

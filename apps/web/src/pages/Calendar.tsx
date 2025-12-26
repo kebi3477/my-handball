@@ -94,21 +94,23 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.header__row}>
-          <div className={styles.header__title_group}>
-            <h1 className={styles.header__title}>마이팀 캘린더</h1>
-            <div className={styles.header__chip} aria-label="선택된 마이팀">
-              {myTeam ? (
-                <>
-                  {myTeam.logoUrl ? (
-                    <img className={styles.header__chip_logo} src={myTeam.logoUrl} alt={`${myTeam.name} 로고`} />
-                  ) : (
-                    <span className={styles.header__chip_logo_fallback} aria-hidden />
-                  )}
+            <div className={styles.header__title_group}>
+              <h1 className={styles.header__title}>마이팀 캘린더</h1>
+              <div className={styles.header__chip} aria-label="선택된 마이팀">
+                {myTeam ? (
+                  <>
+                  <div className={styles.header__chip_logo_wrap}>
+                    {myTeam.logoUrl ? (
+                      <img className={styles.header__chip_logo} src={myTeam.logoUrl} alt={`${myTeam.name} 로고`} />
+                    ) : (
+                      <span className={styles.header__chip_logo_fallback} aria-hidden />
+                    )}
+                  </div>
                   <span className={styles.header__chip_name}>{myTeam.name}</span>
-                </>
-              ) : (
-                <span className={styles.header__chip_name}>마이팀을 선택해 주세요</span>
-              )}
+                  </>
+                ) : (
+                  <span className={styles.header__chip_name}>마이팀을 선택해 주세요</span>
+                )}
             </div>
           </div>
 
@@ -181,16 +183,18 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
                         <div className={styles.calendar__events}>
                           {items.map((it, idx) => (
                             <article key={idx} className={styles.calendar__event} role="listitem" aria-label="마이팀 경기">
-                              {it.opponentLogo ? (
-                                <img
-                                  className={styles.calendar__event_logo}
-                                  src={it.opponentLogo}
-                                  alt=""
-                                  loading="lazy"
-                                />
-                              ) : (
-                                <span className={styles.calendar__event_logo_fallback} aria-hidden />
-                              )}
+                              <div className={styles.calendar__event_logo_wrap}>
+                                {it.opponentLogo ? (
+                                  <img
+                                    className={styles.calendar__event_logo}
+                                    src={it.opponentLogo}
+                                    alt=""
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <span className={styles.calendar__event_logo_fallback} aria-hidden />
+                                )}
+                              </div>
 
                               <div className={styles.calendar__event_score}>{it.scoreText}</div>
 
