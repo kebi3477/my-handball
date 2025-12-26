@@ -3,7 +3,7 @@ import styles from "./Main.module.scss";
 import { useSchedule } from "@/hooks/useSchedule";
 import { useRanking } from "@/hooks/useRanking";
 import { useMyTeam } from "@/hooks/useMyTeam";
-import { DEFAULT_SEASON_YEAR } from "@/constants/schedule";
+import { useSeason } from "@/hooks/useSeason";
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
 import { getCardDateLabel, toGameDate } from "@/utils/common";
@@ -48,10 +48,11 @@ export default function Main() {
   const { team: myTeam } = useMyTeam();
   const myTeamName = myTeam?.name ?? "";
   const myTeamGender = (myTeam?.gender as Gender | "") ?? "";
+  const { season } = useSeason();
 
   const { data, loading, error } = useSchedule({
     gender: myTeamGender,
-    season: DEFAULT_SEASON_YEAR,
+    season,
     type: "1",
   });
 
@@ -94,7 +95,6 @@ export default function Main() {
   }, [slides]);
 
   const [rankGender, setRankGender] = useState<Gender | "">(myTeamGender || "M");
-  const [rankSeason, setRankSeason] = useState<string>(DEFAULT_SEASON_YEAR);
 
   const {
     data: ranking,
@@ -102,7 +102,7 @@ export default function Main() {
     error: rankError,
   } = useRanking({
     gender: rankGender,
-    season: rankSeason,
+    season,
     type: "1",
   });
 

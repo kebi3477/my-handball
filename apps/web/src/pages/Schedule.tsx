@@ -1,17 +1,12 @@
 import { useMemo, useState } from "react";
 import styles from "./Schedule.module.scss";
 import { useSchedule } from "@/hooks/useSchedule";
-import {
-  DEFAULT_SEASON_YEAR,
-  GENDER_LABEL,
-  SEASON_LABELS,
-  SEASON_YEARS,
-} from "@/constants/schedule";
+import { GENDER_LABEL } from "@/constants/schedule";
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
-import type { SeasonKey } from "@/constants/schedule";
 import SkeletonSchedule from "@/components/skeletons/SkeletonSchedule";
 import Error from "@/components/Error";
+import { useSeason } from "@/hooks/useSeason";
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
   return (
@@ -72,7 +67,7 @@ function GameCard({ g }: { g: GameItem }) {
 
 function Schedule() {
   const [gender, setGender] = useState<Gender | "">("");
-  const [season, setSeason] = useState<SeasonKey>(DEFAULT_SEASON_YEAR);
+  const { season } = useSeason();
   const [query, setQuery] = useState("");
   const leagueType = "1";
 
@@ -112,19 +107,6 @@ function Schedule() {
           <h1 className={styles.header__title}>{titleGender} 일정</h1>
 
           <div className={styles.header__actions}>
-            <label className={styles.visuallyHidden} htmlFor="season-select">시즌 선택</label>
-            <select
-              id="season-select"
-              className={styles.select}
-              value={season}
-              onChange={(e) => setSeason(e.target.value as SeasonKey)}
-              aria-label="시즌 선택"
-            >
-              {SEASON_YEARS.map((y) => (
-                <option key={y} value={y}>{SEASON_LABELS[y]}</option>
-              ))}
-            </select>
-
             {data?.url && (
               <a
                 className={styles.header__link}

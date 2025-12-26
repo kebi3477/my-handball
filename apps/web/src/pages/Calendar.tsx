@@ -2,28 +2,26 @@ import { useMemo, useState } from "react";
 import styles from "./Calendar.module.scss";
 import { useMyTeam } from "@/hooks/useMyTeam";
 import { useSchedule, downloadMyTeamIcs } from "@/hooks/useSchedule";
-import { DEFAULT_SEASON_YEAR, SEASON_LABELS, SEASON_YEARS } from "@/constants/schedule";
 import { getMonthMatrix, parseISODate, summarizeGameForTeam } from "@/utils/schedule";
 import type { GameSummary } from "@/utils/schedule";
 import type { Gender } from "@/types/team";
-import type { SeasonKey } from "@/constants/schedule";
 import Error from "@/components/Error";
 import SkeletonCalendar from "@/components/skeletons/SkeletonCalendar";
+import { useSeason } from "@/hooks/useSeason";
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
 type Props = {
-  defaultSeason?: SeasonKey;
   leagueType?: string;
 };
 
-export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueType = "1" }: Props) {
+export default function Calendar({ leagueType = "1" }: Props) {
   const { team: myTeam } = useMyTeam();
+  const { season } = useSeason();
 
   const today = new Date();
   const [year, setYear] = useState<number>(today.getFullYear());
   const [month, setMonth] = useState<number>(today.getMonth() + 1);
-  const [season, setSeason] = useState<SeasonKey>(defaultSeason);
 
   const gender: Gender | "" = myTeam?.gender ?? "";
 
@@ -130,22 +128,6 @@ export default function Calendar({ defaultSeason = DEFAULT_SEASON_YEAR, leagueTy
               {year}년 {month}월
             </div>
             <button className={styles.header__nav_btn} onClick={goNextMonth} disabled={!canNext} aria-label="다음 달">▶</button>
-          </div>
-
-          <div className={styles.header__select}>
-            <label className={styles.visuallyHidden} htmlFor="season-select">시즌 선택</label>
-            <select
-              id="season-select"
-              value={season}
-              onChange={(e) => setSeason(e.target.value as SeasonKey)}
-              aria-label="시즌 선택"
-            >
-              {SEASON_YEARS.map((y) => (
-                <option key={y} value={y}>
-                  {SEASON_LABELS[y]}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
 

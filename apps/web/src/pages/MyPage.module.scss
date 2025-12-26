@@ -1,7 +1,7 @@
 .container {
   width: 100%;
   height: 100%;
-  background-color: var(--color-background);
+  background-color: var(--color-background-sub);
   padding: 24px 20px 32px;
 
   display: flex;
@@ -127,6 +127,87 @@
     font-size: 13px;
     color: var(--color-text-sub);
     line-height: 150%;
+  }
+
+  .settings {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .settings__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    background: var(--color-background-sub);
+  }
+
+  .settings__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .settings__title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--color-black);
+  }
+
+  .settings__desc {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-sub);
+  }
+
+  .select {
+    position: relative;
+    min-width: 140px;
+  }
+
+  .select__field {
+    width: 100%;
+    height: 40px;
+    padding: 0 38px 0 14px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    background: var(--color-card);
+    color: var(--color-text);
+    font-size: 14px;
+    font-weight: 700;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  .select::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--color-text-sub);
+    pointer-events: none;
+  }
+
+  .visuallyHidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 

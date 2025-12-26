@@ -40,31 +40,6 @@
   }
 }
 
-.visuallyHidden {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  border: 0;
-  padding: 0;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.select {
-  height: 32px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background: var(--color-card);
-  color: var(--color-text);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-}
-
 .seg {
   display: flex;
   align-items: center;

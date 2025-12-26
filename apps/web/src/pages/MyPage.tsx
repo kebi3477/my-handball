@@ -1,16 +1,23 @@
 import { useState } from "react";
 import TeamPickerModal from "@/components/TeamPickerModal";
 import { useMyTeam } from "@/hooks/useMyTeam";
+import { useSeason } from "@/hooks/useSeason";
 import type { MyTeam } from "@/types/team";
 import style from "./MyPage.module.scss";
+import { SEASON_LABELS, SEASON_YEARS, type SeasonKey } from "@/constants/schedule";
 
 function MyPage() {
   const { team: myTeam, save } = useMyTeam();
+  const { season, save: saveSeason } = useSeason();
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const handlePicked = (team: MyTeam) => {
     save(team);
     setPickerOpen(false);
+  };
+
+  const handleSeasonChange = (next: SeasonKey) => {
+    saveSeason(next);
   };
 
   return (
@@ -54,6 +61,38 @@ function MyPage() {
 
         <div className={style.tip}>
           좋아하는 팀을 언제든 다시 고를 수 있어요. 선택 즉시 홈과 일정에 반영됩니다.
+        </div>
+      </section>
+
+      <section className={style.card}>
+        <div className={style.card__header}>
+          <div className={style.card__label}>설정</div>
+        </div>
+
+        <div className={style.settings}>
+          <div className={style.settings__row}>
+            <div className={style.settings__text}>
+              <div className={style.settings__title}>조회 시즌</div>
+              <div className={style.settings__desc}>홈 · 일정 · 캘린더에 공통 적용</div>
+            </div>
+
+            <div className={style.select}>
+              <label className={style.visuallyHidden} htmlFor="season-select">조회 시즌 선택</label>
+              <select
+                id="season-select"
+                className={style.select__field}
+                value={season}
+                onChange={(e) => handleSeasonChange(e.target.value as SeasonKey)}
+                aria-label="조회 시즌 선택"
+              >
+                {SEASON_YEARS.map((y) => (
+                  <option key={y} value={y}>
+                    {SEASON_LABELS[y]}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
       </section>
 
