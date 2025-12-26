@@ -69,6 +69,13 @@
   color: var(--color-white);
 }
 
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .seg {
   display: flex;
   align-items: center;
@@ -87,6 +94,47 @@
       color: var(--color-background);
     }
   }
+}
+
+.myToggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 64px;
+  height: 32px;
+  padding: 0 10px 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text-sub);
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.active {
+    background: var(--color-main);
+    border-color: var(--color-main);
+    color: var(--color-white);
+  }
+}
+
+.myToggle__thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+}
+
+.myToggle__label {
+  letter-spacing: 0.2px;
 }
 
 .search {

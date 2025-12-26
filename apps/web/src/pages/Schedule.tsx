@@ -8,23 +8,9 @@ import SkeletonSchedule from "@/components/skeletons/SkeletonSchedule";
 import Error from "@/components/Error";
 import { useSeason } from "@/hooks/useSeason";
 import { Link, useLocation } from "react-router-dom";
-
-const ListIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <rect x="3" y="3" width="10" height="2" rx="1" fill="currentColor" />
-    <rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor" />
-    <rect x="3" y="11" width="10" height="2" rx="1" fill="currentColor" />
-  </svg>
-);
-
-const CalendarIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="1.2" />
-    <rect x="2" y="6" width="12" height="2" fill="currentColor" />
-    <path d="M6 2V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    <path d="M10 2V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-  </svg>
-);
+import { useMyTeam } from "@/hooks/useMyTeam";
+import ListIcon from '@/assets/icons/icon-list.svg?react';
+import CalendarIcon from "@/assets/icons/icon-calendar.svg?react";
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
   return (
@@ -85,17 +71,19 @@ function GameCard({ g }: { g: GameItem }) {
 
 function Schedule() {
   const [gender, setGender] = useState<Gender | "">("");
+  const [query, setQuery] = useState<string>("");
+  const [onlyMyTeam, setOnlyMyTeam] = useState<boolean>(false);
+  
   const { season } = useSeason();
-  const [query, setQuery] = useState("");
-  const leagueType = "1";
-  const location = useLocation();
-  const isSchedule = location.pathname === "/schedule";
-
+  const { team: myTeam } = useMyTeam();
   const { data, loading, error } = useSchedule({
     gender,
     season,
-    type: leagueType,
   });
+  
+  const location = useLocation();
+  const myTeamName = myTeam?.name ?? "";
+  const isSchedule = location.pathname === "/schedule";
 
   const filteredDays = useMemo(() => {
     if (!data) return [];
@@ -103,12 +91,16 @@ function Schedule() {
     const match = (g: GameItem) => {
       const text = `${g.home.name} ${g.away.name} ${g.venue ?? ""} ${(g.broadcast ?? []).join(" ")}`.toLowerCase();
       if (q && !text.includes(q)) return false;
+      if (onlyMyTeam && myTeamName) {
+        const mine = g.home.name.includes(myTeamName) || g.away.name.includes(myTeamName);
+        if (!mine) return false;
+      }
       return true;
     };
     return data.days
       .map((d) => ({ ...d, games: d.games.filter(match) }))
       .filter((d) => d.games.length > 0);
-  }, [data, query]);
+  }, [data, query, onlyMyTeam, myTeamName]);
 
   const titleGender = data
     ? GENDER_LABEL[data.leagueGender]
@@ -148,33 +140,48 @@ function Schedule() {
           </div>
         </div>
 
-        <div className={styles.seg} role="tablist" aria-label="성별 선택">
+        <div className={styles.filters}>
+          <div className={styles.seg} role="tablist" aria-label="성별 선택">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={gender === ""}
+              className={`${styles.seg__button} ${gender === "" ? styles.active : ""}`}
+              onClick={() => setGender("")}
+            >
+              전체
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={gender === "W"}
+              className={`${styles.seg__button} ${gender === "W" ? styles.active : ""}`}
+              onClick={() => setGender("W")}
+            >
+              여자부
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={gender === "M"}
+              className={`${styles.seg__button} ${gender === "M" ? styles.active : ""}`}
+              onClick={() => setGender("M")}
+            >
+              남자부
+            </button>
+          </div>
+
           <button
             type="button"
-            role="tab"
-            aria-selected={gender === ""}
-            className={`${styles.seg__button} ${gender === "" ? styles.active : ""}`}
-            onClick={() => setGender("")}
+            className={`${styles.myToggle} ${onlyMyTeam ? styles.active : ""}`}
+            aria-pressed={onlyMyTeam}
+            onClick={() => setOnlyMyTeam((prev) => !prev)}
+            disabled={!myTeamName}
+            aria-label={myTeamName ? "마이팀 경기만 보기" : "마이팀을 선택해 주세요"}
+            title={myTeamName ? "마이팀 경기만 보기" : "마이팀을 선택해 주세요"}
           >
-            전체
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={gender === "W"}
-            className={`${styles.seg__button} ${gender === "W" ? styles.active : ""}`}
-            onClick={() => setGender("W")}
-          >
-            여자부
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={gender === "M"}
-            className={`${styles.seg__button} ${gender === "M" ? styles.active : ""}`}
-            onClick={() => setGender("M")}
-          >
-            남자부
+            <span className={styles.myToggle__thumb} />
+            <span className={styles.myToggle__label}>MY</span>
           </button>
         </div>
 
