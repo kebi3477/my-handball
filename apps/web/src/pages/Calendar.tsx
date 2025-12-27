@@ -1,31 +1,17 @@
 import { useMemo, useState } from "react";
+import { Link, Navigate, useLocation } from "react-router-dom";
 import styles from "./Calendar.module.scss";
 import { useMyTeam } from "@/hooks/useMyTeam";
+import { useSeason } from "@/hooks/useSeason";
 import { useSchedule, downloadMyTeamIcs } from "@/hooks/useSchedule";
 import { getMonthMatrix, parseISODate, summarizeGameForTeam } from "@/utils/schedule";
 import type { GameSummary } from "@/utils/schedule";
 import type { Gender } from "@/types/team";
+import ListIcon from '@/assets/icons/icon-list.svg?react';
+import CalendarIcon from "@/assets/icons/icon-calendar.svg?react";
 import Error from "@/components/Error";
 import SkeletonCalendar from "@/components/skeletons/SkeletonCalendar";
-import { useSeason } from "@/hooks/useSeason";
-import { Link, useLocation } from "react-router-dom";
 
-const ListIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <rect x="3" y="3" width="10" height="2" rx="1" fill="currentColor" />
-    <rect x="3" y="7" width="10" height="2" rx="1" fill="currentColor" />
-    <rect x="3" y="11" width="10" height="2" rx="1" fill="currentColor" />
-  </svg>
-);
-
-const CalendarIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <rect x="2" y="4" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="1.2" />
-    <rect x="2" y="6" width="12" height="2" fill="currentColor" />
-    <path d="M6 2V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-    <path d="M10 2V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-  </svg>
-);
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -38,6 +24,9 @@ export default function Calendar({ leagueType = "1" }: Props) {
   const { season } = useSeason();
   const location = useLocation();
   const isCalendar = location.pathname === "/calendar";
+  if (!myTeam) {
+    return <Navigate to="/my" replace />;
+  }
 
   const today = new Date();
   const [year, setYear] = useState<number>(today.getFullYear());
@@ -113,7 +102,7 @@ export default function Calendar({ leagueType = "1" }: Props) {
       <header className={styles.header}>
         <div className={styles.header__row}>
             <div className={styles.header__title_group}>
-              <h1 className={styles.header__title}>마이팀 캘린더</h1>
+              <h1 className={styles.header__title}>캘린더</h1>
               <div className={styles.header__chip} aria-label="선택된 마이팀">
                 {myTeam ? (
                   <>

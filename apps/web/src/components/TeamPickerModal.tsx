@@ -28,7 +28,7 @@ export default function TeamPickerModal({
   if (!open) return null;
 
   return (
-    <>
+    <div className={styles.modal}>
       <div className={styles.modal__overlay} onClick={onClose} />
 
       <div className={styles.modal__sheet} role="dialog" aria-modal="true" aria-label="팀 선택">
@@ -82,6 +82,6 @@ export default function TeamPickerModal({
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

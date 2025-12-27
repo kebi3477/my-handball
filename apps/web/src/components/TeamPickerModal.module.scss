@@ -1,24 +1,35 @@
 /* ====== Team Picker Modal ====== */
 .modal {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+
   &__overlay {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,.45);
-    z-index: 1100;
+    z-index: 10;
   }
 
   &__sheet {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
+    max-width: var(--app-max-width);
     width: 100%;
     max-height: 85vh;
+    bottom: var(--app-menu-height);
+    position: absolute;
+    
     background: var(--color-white);
     border-top: 1px solid var(--color-border);
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     padding: 16px;
-    z-index: 1110;
+    z-index: 10;
     animation: slideUp .18s ease-out;
   }
 }

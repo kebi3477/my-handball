@@ -72,7 +72,6 @@ function GameCard({ g }: { g: GameItem }) {
 function Schedule() {
   const [gender, setGender] = useState<Gender | "">("");
   const [query, setQuery] = useState<string>("");
-  const [onlyMyTeam, setOnlyMyTeam] = useState<boolean>(false);
   
   const { season } = useSeason();
   const { team: myTeam } = useMyTeam();
@@ -84,6 +83,9 @@ function Schedule() {
   const location = useLocation();
   const myTeamName = myTeam?.name ?? "";
   const isSchedule = location.pathname === "/schedule";
+  const hasMyTeam = !!myTeamName;
+  
+  const [showMyTeam, setShowMyTeam] = useState<boolean>(hasMyTeam);
 
   const filteredDays = useMemo(() => {
     if (!data) return [];
@@ -91,7 +93,7 @@ function Schedule() {
     const match = (g: GameItem) => {
       const text = `${g.home.name} ${g.away.name} ${g.venue ?? ""} ${(g.broadcast ?? []).join(" ")}`.toLowerCase();
       if (q && !text.includes(q)) return false;
-      if (onlyMyTeam && myTeamName) {
+      if (showMyTeam && myTeamName) {
         const mine = g.home.name.includes(myTeamName) || g.away.name.includes(myTeamName);
         if (!mine) return false;
       }
@@ -100,13 +102,7 @@ function Schedule() {
     return data.days
       .map((d) => ({ ...d, games: d.games.filter(match) }))
       .filter((d) => d.games.length > 0);
-  }, [data, query, onlyMyTeam, myTeamName]);
-
-  const titleGender = data
-    ? GENDER_LABEL[data.leagueGender]
-    : gender
-      ? GENDER_LABEL[gender]
-      : "전체";
+  }, [data, query, showMyTeam, myTeamName]);
 
   if (error) {
     return <Error />
@@ -116,7 +112,7 @@ function Schedule() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.header__top}>
-          <h1 className={styles.header__title}>{titleGender} 일정</h1>
+          <h1 className={styles.header__title}>일정</h1>
 
           <div className={styles.header__actions}>
             <div className={styles.viewSwitch} role="group" aria-label="보기 전환">
@@ -125,9 +121,10 @@ function Schedule() {
                 className={styles.viewSwitch__button}
                 aria-pressed={isSchedule}
                 aria-label="리스트 보기"
-              >
-                <ListIcon />
-              </Link>
+            >
+              <ListIcon />
+            </Link>
+            {hasMyTeam ? (
               <Link
                 to="/calendar"
                 className={styles.viewSwitch__button}
@@ -136,8 +133,20 @@ function Schedule() {
               >
                 <CalendarIcon />
               </Link>
-            </div>
+            ) : (
+              <button
+                type="button"
+                className={styles.viewSwitch__button}
+                aria-disabled="true"
+                aria-label="마이팀을 선택해 주세요"
+                title="마이팀을 선택해 주세요"
+                disabled
+              >
+                <CalendarIcon />
+              </button>
+            )}
           </div>
+        </div>
         </div>
 
         <div className={styles.filters}>
@@ -173,9 +182,9 @@ function Schedule() {
 
           <button
             type="button"
-            className={`${styles.myToggle} ${onlyMyTeam ? styles.active : ""}`}
-            aria-pressed={onlyMyTeam}
-            onClick={() => setOnlyMyTeam((prev) => !prev)}
+            className={`${styles.myToggle} ${showMyTeam ? styles.active : ""}`}
+            aria-pressed={showMyTeam}
+            onClick={() => setShowMyTeam((prev) => !prev)}
             disabled={!myTeamName}
             aria-label={myTeamName ? "마이팀 경기만 보기" : "마이팀을 선택해 주세요"}
             title={myTeamName ? "마이팀 경기만 보기" : "마이팀을 선택해 주세요"}

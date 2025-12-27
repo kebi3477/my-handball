@@ -10,7 +10,7 @@ function SkeletonCalendar() {
       </div>
 
       <div className={styles.loading__grid} role="presentation">
-        {Array.from({ length: 14 }).map((_, i) => (
+        {Array.from({ length: 16 }).map((_, i) => (
           <div key={i} className={styles.loading__day}>
             <span className={styles.loading__dot} />
             <span className={styles.loading__pill} />
