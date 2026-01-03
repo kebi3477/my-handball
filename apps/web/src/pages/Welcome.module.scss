@@ -89,16 +89,24 @@
       .gender {
         display: flex;
         flex-flow: row nowrap;
-        gap: 15px;
+        align-items: center;
+        justify-content: center;
+        gap: 25px;
         margin-top: 20px;
         padding: 0px 20px;
 
         &__button {
-          width: 100%;
+          width: 160px;
           height: 10rem;
           border: 1px solid #EFEFEF;
           border-radius: 10px;
           font-weight: 700;
+
+          display: flex;
+          flex-flow: column nowrap;
+          align-items: center;
+          justify-content: center; 
+          gap: 8px;
 
           &.active {
             background-color: var(--color-main);
@@ -115,7 +123,7 @@
         &__button {
           border-radius: 10px;
           border: 1px solid #EFEFEF;
-          padding: 10px 20px;
+          padding: 14px 20px;
           font-size: 12px;
           font-weight: 700;
           
@@ -165,7 +173,7 @@
           width: 48px;
           height: 48px;
           border-radius: 10px;
-          background-color: #EFEFEF;
+          background-color: var(--color-logo-bg);
           padding: 4px;
 
           img {
@@ -199,22 +207,52 @@
       .team_gender {
         display: flex;
         flex-flow: row nowrap;
-        gap: 10px;
         align-items: center;
         justify-content: center;
 
         &__button {
           border-radius: 10rem;
-          border: 1px solid var(--color-gray-light);
           padding: 10px 20px;
+          font-size: 14px;
+          font-weight: 800;
           
           &.active {
             background-color: var(--color-main);
-            border-color: var(--color-main);
             color: var(--color-white);
+          }
+
+          &:first-child {
+            border-radius: 10px 0 0 10px;
+          }
+
+          &:last-child {
+            border-radius: 0 10px 10px 0;
           }
         }
 
+      }
+
+      .last {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 30px;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        top: 20%;
+
+        &__title {
+          font-size: 24px;
+          font-weight: bold;
+        }
+
+        &__content {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--color-main);
+          line-height: 24px;
+          text-align: center;
+        }
       }
     }
   }
@@ -227,7 +265,7 @@
     gap: 12px;
     padding: 40px;
 
-    .buttonRow {
+    .button_row {
       display: flex;
       flex-flow: row nowrap;
       gap: 15px;

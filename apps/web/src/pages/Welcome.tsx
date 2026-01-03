@@ -3,15 +3,17 @@ import Symbol from "@/assets/icons/symbol.svg?react";
 import Logo from "@/assets/icons/logo.svg?react";
 import ProgressBackIcon from "@/assets/icons/icon-progress-back.svg?react";
 import TeamCheckIcon from "@/assets/icons/icon-team-check.svg?react";
+import MaleIcon from "@/assets/icons/icon-welcome-male.svg?react";
+import FemaleIcon from "@/assets/icons/icon-welcome-female.svg?react";
 import type { Gender, TeamItem } from "@/types/team";
 import style from "./Welcome.module.scss";
 import { useTeam } from "@/hooks/useTeam";
 import { useProfileSetup } from "@/hooks/useProfileSetup";
 import { useMyTeam } from "@/hooks/useMyTeam";
 
-const GENDER_OPTIONS: { value: Gender; label: string }[] = [
-  { value: "M", label: "남자" },
-  { value: "W", label: "여자" },
+const GENDER_OPTIONS: { value: Gender; label: string, icon: string }[] = [
+  { value: "M", label: "남성", icon: MaleIcon },
+  { value: "W", label: "여성", icon: FemaleIcon },
 ];
 
 const AGE_OPTIONS: { value: string; label: string }[] = [
@@ -87,6 +89,7 @@ function Welcome() {
           <div className={style.gender}>
             {GENDER_OPTIONS.map((g) => {
               const active = g.value === gender;
+              const Icon = g.icon;
               return (
                 <button
                   key={g.value}
@@ -94,6 +97,7 @@ function Welcome() {
                   className={`${style.gender__button} ${active && style.active}`}
                   onClick={() => setGender(g.value)}
                 >
+                  <Icon />
                   {g.label}
                 </button>
               );
@@ -123,6 +127,20 @@ function Welcome() {
             본인이 좋아하는 핸드볼<br/>팀을 골라주세요
           </div>
 
+        <div className={style.team_gender}>
+            { GENDER_OPTIONS.map(g => { 
+              const active = selectedGender === g.value;
+              return (
+                <button
+                  className={`${style.team_gender__button} ${active && style.active}`}
+                  onClick={() => setSelectedGender(g.value)}
+                >
+                  {g.label}팀
+                </button>
+              )
+            })}
+          </div>
+
           <div className={style.team}>
             <div className={style.team__scroll}>
               { !loading && data?.teams?.map(team => {
@@ -146,28 +164,19 @@ function Welcome() {
               })}
             </div>
           </div>
-          <div className={style.team_gender}>
-            { GENDER_OPTIONS.map(g => { 
-              const active = selectedGender === g.value;
-              return (
-                <button
-                  className={`${style.team_gender__button} ${active && style.active}`}
-                  onClick={() => setSelectedGender(g.value)}
-                >
-                  {g.label}팀
-                </button>
-              )
-            })}
-          </div>
+          
         </div>
 
         <div className={style.step}>
-          설정 끝
+          <div className={style.last}>
+            <div className={style.last__title}>환영합니다!</div>
+            <div className={style.last__content}>이제부터 여러분의 최애팀을<br/>응원해보세요.</div>
+          </div>
         </div>
       </div>
 
       <div className={style.button_area}>
-        <div className={style.buttonRow}>
+        <div className={style.button_row}>
           {step === 0 && (
             <button className={style.primary} onClick={goNext}>
               시작하기
