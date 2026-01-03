@@ -11,9 +11,15 @@
     align-items: center;
     gap: 4px;
     padding: 20px;
+    visibility: hidden;
+
+    &.active {
+      visibility: visible;
+    }
     
     &__button {
       display: flex;
+      color: var(--color-text);
     }
 
     &__background {

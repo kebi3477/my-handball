@@ -88,8 +88,10 @@ export default function Main() {
 
     const idx = pickIndex(slides);
     const el = itemRefs.current[idx];
+    console.log('idx', idx, el);
     if (el) {
       const left = el.offsetLeft - 12;
+      console.log('left', left);
       railRef.current.scrollTo({ left, behavior: "auto" });
     }
   }, [slides]);

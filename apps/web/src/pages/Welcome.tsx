@@ -58,7 +58,9 @@ function Welcome() {
 
   return (
     <div className={style.container}>
-      <div className={style.progress}>
+      <div 
+        className={`${style.progress} ${step !== 0 && style.active}`}
+      >
         <button className={style.progress__button} onClick={goPrev}>
           <ProgressBackIcon />
         </button>

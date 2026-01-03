@@ -11,7 +11,7 @@
   &__page {
     max-width: var(--app-max-width);
     height: calc(100dvh - var(--app-menu-height) - var(--app-header-height));
-    width: 100%;
+    width: min(100vw, var(--app-max-width));
     margin: 0 auto;
   }
 }
