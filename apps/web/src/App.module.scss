@@ -7,10 +7,11 @@
   width: 100%;
   max-width: var(--app-max-width);
   margin: 0 auto;
+  padding-top: env(safe-area-inset-top);
 
   &__page {
     max-width: var(--app-max-width);
-    min-height: calc(100svh - var(--app-header-height));
+    min-height: calc(100svh - var(--app-header-height) - env(safe-area-inset-top));
     width: min(100vw, var(--app-max-width));
     margin: 0 auto;
     padding-bottom: calc(var(--app-menu-height) + env(safe-area-inset-bottom));
