@@ -1,5 +1,5 @@
 .app {
-  min-height: 100dvh;
+  min-height: 100svh;
   background: var(--color-background);
   color: var(--color-text);
   display: grid;
@@ -10,10 +10,10 @@
 
   &__page {
     max-width: var(--app-max-width);
-    min-height: calc(100dvh - var(--app-header-height));
+    min-height: calc(100svh - var(--app-header-height));
     width: min(100vw, var(--app-max-width));
     margin: 0 auto;
-    padding-bottom: calc(var(--app-menu-height) + 16px);
+    padding-bottom: calc(var(--app-menu-height) + env(safe-area-inset-bottom));
   }
 }
 

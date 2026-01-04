@@ -1,6 +1,6 @@
 .menu {
   width: min(100vw, var(--app-max-width));
-  height: var(--app-menu-height);
+  height: calc(var(--app-menu-height) + env(safe-area-inset-bottom));
   background-color: var(--color-white);
   display: flex;
   align-items: center;
@@ -9,6 +9,7 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
+  padding-bottom: env(safe-area-inset-bottom);
 
   &__item {
     flex: 1;

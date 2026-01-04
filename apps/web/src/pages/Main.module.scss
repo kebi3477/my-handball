@@ -6,7 +6,7 @@
   color: var(--color-text);
   overflow-y: auto;
   scrollbar-width: none;
-  padding-bottom: calc(var(--app-menu-height) + 20px);
+  padding-bottom: calc(var(--app-menu-height) + env(safe-area-inset-bottom) + 20px);
 }
 
 .top, .bottom {
