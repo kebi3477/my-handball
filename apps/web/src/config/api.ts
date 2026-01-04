@@ -14,6 +14,7 @@ const API_PATHS = {
   scheduleMyTeamIcs: "/api/schedule/ics/my-team",
   team: "/api/team",
   ranking: "/api/ranking",
+  welcomeSubmit: "/api/welcome/submissions",
 } as const;
 
 export const API_ENDPOINTS = API_PATHS;
@@ -71,5 +72,10 @@ export function buildTeamUrl({
 }: TeamRequest) {
   const url = resolveApiUrl(API_ENDPOINTS.team);
   url.searchParams.set("gender", gender);
+  return url.toString();
+}
+
+export function buildWelcomeSubmitUrl() {
+  const url = resolveApiUrl(API_ENDPOINTS.welcomeSubmit);
   return url.toString();
 }

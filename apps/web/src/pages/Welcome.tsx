@@ -10,6 +10,7 @@ import style from "./Welcome.module.scss";
 import { useTeam } from "@/hooks/useTeam";
 import { useProfileSetup } from "@/hooks/useProfileSetup";
 import { useMyTeam } from "@/hooks/useMyTeam";
+import { submitWelcome } from "@/api/welcome";
 
 const GENDER_OPTIONS: { value: Gender; label: string, icon: string }[] = [
   { value: "M", label: "남성", icon: MaleIcon },
@@ -32,6 +33,7 @@ function Welcome() {
 
   const [selectedGender, setSelectedGender] = useState<Gender>('M');
   const [selectedTeam, setSelectedTeam] = useState<TeamItem|null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const profileSetup = useProfileSetup();
   const myTeam = useMyTeam();
@@ -48,11 +50,27 @@ function Welcome() {
     setStep((prev) => Math.max(prev - 1, 0));
   }, []);
 
-  const goMain = useCallback(() => {
-    profileSetup.save(true);
-    myTeam.save(selectedTeam);
-    window.location.reload();
-  }, [selectedTeam]);
+  const goMain = useCallback(async () => {
+    setSubmitting(true);
+
+    try {
+      await submitWelcome({
+        userGender: gender as Gender,
+        ageGroup: age,
+        teamGender: selectedGender,
+        teamNum: selectedTeam?.teamNum ?? null,
+        teamName: selectedTeam?.name ?? null,
+        teamLogoUrl: selectedTeam?.logoUrl ?? null,
+      });
+    } catch (err) {
+      // 오류가 나도 온보딩 진입은 막지 않는다
+      console.error("Failed to submit welcome data", err);
+    } finally {
+      profileSetup.save(true);
+      myTeam.save(selectedTeam);
+      window.location.reload();
+    }
+  }, [age, gender, myTeam, profileSetup, selectedGender, selectedTeam]);
 
   const transform = `translateX(${-25 * step}%)`;
   const progressWidth = `${33.3 * step}%`;
@@ -190,7 +208,7 @@ function Welcome() {
           )}
 
           {step === 3 && (
-            <button className={style.primary} onClick={goMain}>
+            <button className={style.primary} onClick={goMain} disabled={submitting}>
               입장하기
             </button>
           )}
