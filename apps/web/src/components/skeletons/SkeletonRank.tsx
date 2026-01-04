@@ -3,30 +3,29 @@ import styles from "./SkeletonRank.module.scss";
 function SkeletonRank() {
   return (
     <div className={styles.loading}>
-      <div className={styles.loading__top}>
-        {Array.from({ length: 3 }).map((_, idx) => (
-          <div key={idx} className={styles.loading__top__wrap}>
-            <span className={styles.loading__top__label} />
-            <div className={styles.loading__top__card}>
-              <span className={styles.loading__avatar} />
-              <span className={styles.loading__line} />
-              <span className={styles.loading__chip} />
-            </div>
-          </div>
-        ))}
-      </div>
+      <div className={styles.loading__table}>
+        <div className={styles.loading__table_header} aria-hidden={true}>
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <span key={`head-${idx}`} className={styles.loading__header_cell} />
+          ))}
+        </div>
 
-      <div className={styles.loading__scroll}>
-        {Array.from({ length: 4 }).map((_, idx) => (
-          <div key={idx} className={styles.loading__item}>
-            <span className={styles.loading__rank} />
-            <div className={styles.loading__card}>
-              <span className={styles.loading__logo} />
-              <span className={styles.loading__line} />
-              <span className={styles.loading__chip} />
+        <div className={styles.loading__rows}>
+          {Array.from({ length: 5 }).map((_, idx) => (
+            <div key={idx} className={styles.loading__row}>
+              <div className={styles.loading__cell_team}>
+                <span className={styles.loading__logo} />
+                <div className={styles.loading__meta}>
+                  <span className={styles.loading__small_line} />
+                  <span className={styles.loading__line} />
+                </div>
+              </div>
+              {Array.from({ length: 5 }).map((_, colIdx) => (
+                <span key={`stat-${colIdx}`} className={styles.loading__cell} />
+              ))}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
