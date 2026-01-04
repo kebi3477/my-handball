@@ -101,9 +101,20 @@
     font-weight: 800;
     letter-spacing: -0.2px;
     color: var(--color-white) ;
-    background: var(--color-badge);
     padding: 4px 8px;
     border-radius: 999px;
+
+    &_live {
+      background: var(--color-badge-live);
+    }
+
+    &_soon {
+      background: var(--color-main);
+    }
+
+    &_closed {
+      background: var(--color-badge);
+    }
   }
 
   &__info {

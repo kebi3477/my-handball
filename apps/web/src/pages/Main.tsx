@@ -32,6 +32,18 @@ type SlideItem = {
   isMyTeam: boolean;
 };
 
+type GameStatus = "Live" | "Soon" | "Closed";
+
+function getGameStatus(startDate: Date, now = new Date()): GameStatus {
+  if (!startDate || Number.isNaN(startDate.getTime())) return "Closed";
+
+  const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
+  console.log(now, endDate);
+  if (now < startDate) return "Soon";
+  if (now <= endDate) return "Live";
+  return "Closed";
+}
+
 function Logo({ src, alt }: { src: string | null | undefined; alt: string }) {
   return (
     <div className={styles.logoWrapper}>
@@ -88,10 +100,9 @@ export default function Main() {
 
     const idx = pickIndex(slides);
     const el = itemRefs.current[idx];
-    console.log('idx', idx, el);
+
     if (el) {
       const left = el.offsetLeft - 12;
-      console.log('left', left);
       railRef.current.scrollTo({ left, behavior: "auto" });
     }
   }, [slides]);
@@ -141,6 +152,7 @@ export default function Main() {
           <div className={styles.rail} ref={railRef}>
             {slides.map((s, i) => {
               const g = s.game;
+              const status = getGameStatus(s.date);
               return (
                 <div
                   key={s.id}
@@ -150,7 +162,17 @@ export default function Main() {
                   }}
                 >
                   <div className={styles.card__header}>
-                    <div className={styles.card__badge}>Closed</div>
+                    <div
+                      className={`${styles.card__badge} ${
+                        status === "Live"
+                          ? styles.card__badge_live
+                          : status === "Soon"
+                            ? styles.card__badge_soon
+                            : styles.card__badge_closed
+                      }`}
+                    >
+                      {status}
+                    </div>
                   </div>
 
                   <div className={styles.card__info}>
