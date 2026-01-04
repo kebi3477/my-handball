@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styles from "./Ranking.module.scss";
 import { useRanking } from "@/hooks/useRanking";
 import { useSeason } from "@/hooks/useSeason";
@@ -14,8 +14,10 @@ export default function Ranking() {
 
   const { data, loading, error } = useRanking({ gender, season, type: "1" });
 
-  const topRank = [2, 1, 3].map((r) => data?.items.find((item) => item.rank === r));
-  const otherRank = data?.items.filter((item) => item.rank > 3);
+  const ranks = useMemo(
+    () => (data ? [...data.items].sort((a, b) => a.rank - b.rank) : []),
+    [data],
+  );
 
   if (error) return <Error />;
 
@@ -47,34 +49,38 @@ export default function Ranking() {
 
       {loading && <SkeletonRank />}
 
-      {!loading && data && data.items.length > 1 && (
+      {!loading && data && ranks.length > 1 && (
         <div className={styles.rank}>
-          <div className={styles.rank__top}>
-            {topRank.map((r, idx) => (
-              <div key={idx} className={styles.rank__top__wrap}>
-                <div className={styles.rank__top__title}>{r ? `${r.rank}위` : "-"}</div>
-                <div className={styles.rank__top__card}>
-                  <div className={styles.rank__top__card__image}>
-                    <img src={r?.team.logoUrl ?? ""} alt={r ? `${r.team.name} 로고` : "랭킹 팀 로고"} />
-                  </div>
-                  <div className={styles.rank__top__card__name}>{r?.team.name ?? "-"}</div>
-                  <div className={styles.rank__top__card__point}>{r ? `${r.points}점` : ""}</div>
-                </div>
-              </div>
-            ))}
+          <div className={styles.rank__header} aria-hidden={true}>
+            <div className={`${styles.rank__col} ${styles.rank__colTeam}`}>팀명/순위</div>
+            <div className={styles.rank__col}>경기수</div>
+            <div className={styles.rank__col}>승점</div>
+            <div className={styles.rank__col}>승</div>
+            <div className={styles.rank__col}>무</div>
+            <div className={styles.rank__col}>패</div>
           </div>
 
-          <div className={styles.rank__scroll}>
-            {otherRank?.map((r) => (
-              <div key={r.rank} className={styles.rank__item}>
-                <div className={styles.rank__title}>{r.rank}위</div>
-                <div className={styles.rank__card}>
-                  <div className={styles.rank__card__image}>
-                    <img src={r.team.logoUrl ?? ""} alt={`${r.team.name} 로고`} />
+          <div className={styles.rank__list}>
+            {ranks.map((item) => (
+              <div key={item.rank} className={styles.rank__row}>
+                <div className={`${styles.rank__col} ${styles.rank__colTeam}`}>
+                  <div className={styles.rank__logo}>
+                    {item.team.logoUrl ? (
+                      <img src={item.team.logoUrl} alt={`${item.team.name} 로고`} />
+                    ) : (
+                      <div className={styles.rank__logo__fallback} aria-label={`${item.team.name} 로고`} />
+                    )}
                   </div>
-                  <div className={styles.rank__card__name}>{r.team.name}</div>
-                  <div className={styles.rank__card__point}>{r.points}점</div>
+                  <div className={styles.rank__teamInfo}>
+                    <span className={styles.rank__position}>{item.rank}위</span>
+                    <span className={styles.rank__name}>{item.team.name}</span>
+                  </div>
                 </div>
+                <div className={styles.rank__col}>{item.played}</div>
+                <div className={styles.rank__col}>{item.points}</div>
+                <div className={styles.rank__col}>{item.wins}</div>
+                <div className={styles.rank__col}>{item.draws}</div>
+                <div className={styles.rank__col}>{item.losses}</div>
               </div>
             ))}
           </div>
