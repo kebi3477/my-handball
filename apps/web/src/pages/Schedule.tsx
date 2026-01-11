@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./Schedule.module.scss";
 import { useSchedule } from "@/hooks/useSchedule";
 import { GENDER_LABEL } from "@/constants/schedule";
@@ -11,6 +11,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useMyTeam } from "@/hooks/useMyTeam";
 import ListIcon from '@/assets/icons/icon-list.svg?react';
 import CalendarIcon from "@/assets/icons/icon-calendar.svg?react";
+import { parseISODate } from "@/utils/schedule";
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
   return (
@@ -103,6 +104,108 @@ function Schedule() {
       .map((d) => ({ ...d, games: d.games.filter(match) }))
       .filter((d) => d.games.length > 0);
   }, [data, query, showMyTeam, myTeamName]);
+
+  const targetInfo = useMemo(() => {
+    if (!filteredDays.length) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let todayIndex = -1;
+    let futureIndex = -1;
+    let futureDiff = Number.POSITIVE_INFINITY;
+    let closestIndex = -1;
+    let closestDiff = Number.POSITIVE_INFINITY;
+
+    filteredDays.forEach((day, index) => {
+      const parsed = parseISODate(day.dateISO ?? "");
+      if (!parsed) return;
+      const diff = parsed.getTime() - today.getTime();
+      const abs = Math.abs(diff);
+
+      if (diff === 0 && todayIndex === -1) {
+        todayIndex = index;
+      }
+      if (diff >= 0 && diff < futureDiff) {
+        futureDiff = diff;
+        futureIndex = index;
+      }
+      if (abs < closestDiff) {
+        closestDiff = abs;
+        closestIndex = index;
+      }
+    });
+    
+    const label = "최근 경기로";
+    if (todayIndex >= 0) {
+      return { index: todayIndex, label };
+    }
+    if (futureIndex >= 0) {
+      return { index: futureIndex, label };
+    }
+    if (closestIndex >= 0) {
+      return { index: closestIndex, label };
+    }
+    return null;
+  }, [filteredDays]);
+
+  const [showJump, setShowJump] = useState(false);
+  const hasScrolledRef = useRef(false);
+
+  useEffect(() => {
+    if (!targetInfo) {
+      setShowJump(false);
+      return;
+    }
+
+    setShowJump(true);
+    hasScrolledRef.current = false;
+
+    const findTarget = () =>
+      document.querySelector<HTMLElement>(`[data-day-index="${targetInfo.index}"]`);
+    const getScrollRoot = () => document.getElementById("root");
+
+    let rafId = 0;
+    const update = () => {
+      if (!hasScrolledRef.current) return;
+      const target = findTarget();
+      const root = getScrollRoot();
+      if (!root) return;
+      if (!target) {
+        setShowJump(false);
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      const rootRect = root.getBoundingClientRect();
+      const rootHeight = rootRect.height || window.innerHeight;
+      const inView = rect.top < rootRect.bottom && rect.bottom > rootRect.top;
+      const isPastTarget = rect.top - rootRect.top <= rootHeight * 0.3;
+      setShowJump(!inView && !isPastTarget);
+    };
+
+    const onScroll = () => {
+      if (!hasScrolledRef.current) {
+        hasScrolledRef.current = true;
+      }
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(update);
+    };
+
+    const root = getScrollRoot();
+    root?.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      root?.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [targetInfo]);
+
+  const handleJump = () => {
+    if (!targetInfo) return;
+    const target = document.querySelector<HTMLElement>(`[data-day-index="${targetInfo.index}"]`);
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   if (error) {
     return <Error />
@@ -221,8 +324,13 @@ function Schedule() {
 
       {!loading && !error && filteredDays.length > 0 && (
         <main className={styles.list} role="list">
-          {filteredDays.map((d) => (
-            <section key={d.dateISO ?? d.dateLabel} className={styles.day}>
+          {filteredDays.map((d, index) => (
+            <section
+              key={d.dateISO ?? d.dateLabel}
+              className={styles.day}
+              data-day-index={index}
+              data-day-date={d.dateISO ?? ""}
+            >
               <div className={styles.day__label} aria-label="날짜">
                 <span className={styles.day__date}>{d.dateLabel}</span>
                 {d.dateISO && <span className={styles.day__iso}>{d.dateISO}</span>}
@@ -235,6 +343,17 @@ function Schedule() {
             </section>
           ))}
         </main>
+      )}
+
+      {targetInfo && showJump && (
+        <button
+          type="button"
+          className={styles.jump_button}
+          onClick={handleJump}
+          aria-label={targetInfo.label}
+        >
+          {targetInfo.label}
+        </button>
       )}
     </div>
   );

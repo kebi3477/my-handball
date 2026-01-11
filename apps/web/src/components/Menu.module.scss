@@ -10,6 +10,7 @@
   transform: translateX(-50%);
   z-index: 5;
   padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.08);
 
   &__item {
     flex: 1;
