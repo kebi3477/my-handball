@@ -247,7 +247,7 @@
 
   &__grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr;
+    grid-template-columns: 80px 1.5fr 80px;
     align-items: center;
     gap: 12px;
 
@@ -272,7 +272,7 @@
     font-size: 14px;
     font-weight: 800;
     letter-spacing: -0.2px;
-    max-width: 140px;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -298,7 +298,8 @@
 
   &__meta {
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: column nowrap;
+    align-items: center;
     gap: 6px;
     justify-content: center;
     color: var(--color-text-sub);
@@ -307,6 +308,7 @@
   }
 
   &__meta_item {
+    width: max-content;
     display: inline-flex;
     align-items: center;
     padding: 4px 8px;
