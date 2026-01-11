@@ -63,7 +63,6 @@ function Welcome() {
         teamLogoUrl: selectedTeam?.logoUrl ?? null,
       });
     } catch (err) {
-      // 오류가 나도 온보딩 진입은 막지 않는다
       console.error("Failed to submit welcome data", err);
     } finally {
       profileSetup.save(true);

@@ -7,6 +7,7 @@
   flex-direction: column;
 
   .progress {
+    height: 64px;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -51,7 +52,7 @@
       display: flex;
       flex-direction: column;
       gap: 24px;
-      min-height: calc(100svh - 140px);
+      min-height: calc(100svh - 184px);
       justify-content: center;
 
       .logo {
@@ -242,7 +243,6 @@
         align-items: center;
         justify-content: center;
         position: relative;
-        top: 20%;
 
         &__title {
           font-size: 24px;
@@ -261,6 +261,7 @@
   }
 
   .button_area {
+    height: 114px;
     display: flex;
     flex-direction: column;
     align-items: stretch;

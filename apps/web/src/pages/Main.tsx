@@ -38,7 +38,7 @@ function getGameStatus(startDate: Date, now = new Date()): GameStatus {
   if (!startDate || Number.isNaN(startDate.getTime())) return "Closed";
 
   const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
-  console.log(now, endDate);
+
   if (now < startDate) return "Soon";
   if (now <= endDate) return "Live";
   return "Closed";

@@ -3,12 +3,14 @@ import TeamPickerModal from "@/components/TeamPickerModal";
 import { useMyTeam } from "@/hooks/useMyTeam";
 import { useSeason } from "@/hooks/useSeason";
 import type { MyTeam } from "@/types/team";
+import { useTheme, type ThemeMode } from "@/hooks/useTheme";
 import style from "./MyPage.module.scss";
 import { SEASON_LABELS, SEASON_YEARS, type SeasonKey } from "@/constants/schedule";
 
 function MyPage() {
   const { team: myTeam, save } = useMyTeam();
   const { season, save: saveSeason } = useSeason();
+  const { theme, setTheme } = useTheme();
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const handlePicked = (team: MyTeam) => {
@@ -90,6 +92,28 @@ function MyPage() {
                     {SEASON_LABELS[y]}
                   </option>
                 ))}
+              </select>
+            </div>
+          </div>
+
+          <div className={style.settings__row}>
+            <div className={style.settings__text}>
+              <div className={style.settings__title}>테마</div>
+              <div className={style.settings__desc}>기기 설정 · 라이트 · 다크 선택</div>
+            </div>
+
+            <div className={style.select}>
+              <label className={style.visuallyHidden} htmlFor="theme-select">테마 선택</label>
+              <select
+                id="theme-select"
+                className={style.select__field}
+                value={theme}
+                onChange={(e) => setTheme(e.target.value as ThemeMode)}
+                aria-label="테마 선택"
+              >
+                <option value="system">기기 설정 따름</option>
+                <option value="light">라이트</option>
+                <option value="dark">다크</option>
               </select>
             </div>
           </div>

@@ -16,6 +16,8 @@ export const getCardDateLabel = (date: Date) => {
   const dd = String(date.getDate()).padStart(2, "0");
 
   const dow = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][date.getDay()];
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
 
-  return `${yy}.${mm}.${dd} ${dow}`;
+  return `${yy}.${mm}.${dd} ${dow} ${hour}:${minutes}`;
 };
