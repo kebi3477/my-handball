@@ -47,7 +47,7 @@
 
     &__header {
       display: grid;
-      grid-template-columns: 1fr repeat(5, 30px);
+      grid-template-columns: minmax(0, 1fr) repeat(5, 30px);
       align-items: center;
       gap: 10px;
       padding: 4px 10px;
@@ -76,7 +76,7 @@
 
     &__row {
       display: grid;
-      grid-template-columns: 1fr repeat(5, 30px);
+      grid-template-columns: minmax(0, 1fr) repeat(5, 30px);
       align-items: center;
       gap: 10px;
       background-color: var(--color-card);
@@ -101,6 +101,7 @@
     &__colTeam {
       justify-content: flex-start;
       gap: 12px;
+      min-width: 0;
     }
 
     &__logo {
