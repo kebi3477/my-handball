@@ -118,6 +118,16 @@
     }
   }
 
+  &__liveLink {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--color-main);
+    background: var(--color-surface-ghost);
+    border: 1px solid var(--color-border);
+    padding: 4px 8px;
+    border-radius: 999px;
+  }
+
   &__info {
     display: flex;
     flex-flow: column nowrap;

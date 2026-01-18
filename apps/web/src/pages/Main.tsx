@@ -56,6 +56,18 @@ function Logo({ src, alt }: { src: string | null | undefined; alt: string }) {
   );
 }
 
+function isValidExternalUrl(value?: string | null) {
+  const trimmed = (value ?? "").trim();
+  return /^https?:\/\//i.test(trimmed) ? trimmed : null;
+}
+
+function pickLiveLink(links: { provider: string; url: string }[] = []) {
+  if (!links.length) return null;
+  const naver = links.find((l) => l.provider?.toLowerCase() === "naver");
+  if (naver) return naver;
+  return links[links.length - 1] ?? null;
+}
+
 export default function Main() {
   const { team: myTeam } = useMyTeam();
   const myTeamName = myTeam?.name ?? "";
@@ -153,6 +165,10 @@ export default function Main() {
             {slides.map((s, i) => {
               const g = s.game;
               const status = getGameStatus(s.date);
+              const liveLink = status === "Live" ? pickLiveLink(g.liveLinks ?? []) : null;
+              const liveUrl = isValidExternalUrl(liveLink?.url);
+              const liveLabel =
+                liveLink?.provider?.toLowerCase() === "naver" ? "NAVER" : "생중계";
               return (
                 <div
                   key={s.id}
@@ -173,6 +189,16 @@ export default function Main() {
                     >
                       {status}
                     </div>
+                    {liveUrl && (
+                      <a
+                        className={styles.card__liveLink}
+                        href={liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {liveLabel}
+                      </a>
+                    )}
                   </div>
 
                   <div className={styles.card__info}>
