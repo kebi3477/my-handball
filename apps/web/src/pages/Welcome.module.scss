@@ -1,7 +1,8 @@
 .container {
   width: 100%;
-  min-height: 100svh;
+  height: 100%;
   background-color: var(--color-background);
+  padding-top: env(safe-area-inset-top);
 
   display: flex;
   flex-direction: column;
