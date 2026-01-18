@@ -4,7 +4,7 @@ import * as cheerio from "cheerio";
 import type { CheerioAPI, Cheerio as CheerioType } from "cheerio";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
-import { DayBlock, GameItem, ScheduleResponse, TeamInfo } from "./types";
+import { DayBlock, GameItem, ScheduleResponse, TeamInfo, LiveLink } from "./types";
 
 dayjs.locale("ko");
 
@@ -36,6 +36,35 @@ function parseTeam($team: CheerioType<any>): TeamInfo {
   return { name, logoUrl };
 }
 
+function normalizeLiveProvider(className: string, label: string): string {
+  const lower = `${className} ${label}`.toLowerCase();
+  if (lower.includes("naver")) return "naver";
+  if (lower.includes("daum")) return "daum";
+  if (lower.includes("kbs")) return "kbs";
+  if (lower.includes("mbc")) return "mbc";
+  if (lower.includes("sbs")) return "sbs";
+  return "etc";
+}
+
+function parseLiveLinks($li: CheerioType<any>): LiveLink[] {
+  const links: LiveLink[] = [];
+  $li.find(".btn_wrap a.btn.live").each((_, el) => {
+    const $a = $li.find(el);
+    const href = ($a.attr("href") ?? "").trim();
+    if (!/^https?:\/\//i.test(href)) {
+      // TODO: Handle relative internal links (e.g. timeline.php) separately.
+      return;
+    }
+    const className = ($a.attr("class") ?? "").trim();
+    const label = ($a.text() ?? "").trim();
+    links.push({
+      provider: normalizeLiveProvider(className, label),
+      url: href,
+    });
+  });
+  return links;
+}
+
 function parseGame($: CheerioAPI, $li: CheerioType<any>, containerId: string | null): GameItem {
   const $score = $li.find(".game_score").first();
 
@@ -49,6 +78,7 @@ function parseGame($: CheerioAPI, $li: CheerioType<any>, containerId: string | n
   let time: string | null = null;
   let broadcast: string[] = [];
   let venue: string | null = null;
+  const liveLinks = parseLiveLinks($li);
 
   if (parts.length >= 2) {
     time = textOrNull(parts[0]);
@@ -62,7 +92,7 @@ function parseGame($: CheerioAPI, $li: CheerioType<any>, containerId: string | n
     venue = textOrNull(parts[0]);
   }
 
-  return { home, away, scoreText, time, broadcast, venue, containerId };
+  return { home, away, scoreText, time, broadcast, liveLinks, venue, containerId };
 }
 
 @Injectable()

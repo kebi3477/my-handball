@@ -3,12 +3,18 @@ export interface TeamInfo {
   logoUrl: string | null; // 절대 URL
 }
 
+export interface LiveLink {
+  provider: string; // 예: "naver", "daum", "etc"
+  url: string;      // 절대 URL
+}
+
 export interface GameItem {
   home: TeamInfo;
   away: TeamInfo;
   scoreText: string | null; // 예: "- : -"
   time: string | null;      // 예: "16:15"
   broadcast: string[];      // 예: ["MAXPORTS","NAVER","다음"]
+  liveLinks: LiveLink[];    // 예: [{ provider: "naver", url: "https://..." }]
   venue: string | null;     // 예: "광명 시민체육관"
   containerId: string | null; // ul id (예: m1768057200)
 }

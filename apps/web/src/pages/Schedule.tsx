@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./Schedule.module.scss";
 import { useSchedule } from "@/hooks/useSchedule";
 import { GENDER_LABEL } from "@/constants/schedule";
-import type { GameItem } from "@/types/schedule";
+import type { GameItem, LiveLink } from "@/types/schedule";
 import type { Gender } from "@/types/team";
 import SkeletonSchedule from "@/components/skeletons/SkeletonSchedule";
 import Error from "@/components/Error";
@@ -25,14 +25,55 @@ function Logo({ src, alt }: { src: string | null; alt: string }) {
   );
 }
 
-function BroadcastChips({ items }: { items: string[] }) {
-  if (!items?.length) return null;
+type BroadcastChipsProps = {
+  liveLinks: LiveLink[];
+};
+
+function isValidExternalUrl(value?: string | null) {
+  const trimmed = (value ?? "").trim();
+  return /^https?:\/\//i.test(trimmed) ? trimmed : null;
+}
+
+function openExternal(url: string) {
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function labelForProvider(provider?: string) {
+  const key = (provider ?? "").toLowerCase();
+  if (key === "naver") return "NAVER";
+  if (key === "daum") return "DAUM";
+  return "생중계";
+}
+
+function BroadcastChips({ liveLinks }: BroadcastChipsProps) {
+  const validLinks = (liveLinks ?? []).filter((link) =>
+    isValidExternalUrl(link.url),
+  );
+  if (validLinks.length === 0) return null;
   return (
     <div className={styles.card__chips} aria-label="방송">
-      {items.map((b, i) => (
-        <span className={styles.card__chip} key={`${b}-${i}`}>
-          {b}
-        </span>
+      {validLinks.map((link, i) => (
+        <button
+          key={`${link.provider}-${i}`}
+          type="button"
+          className={`${styles.card__chip} ${styles.card__chipLink}`}
+          onClick={() => openExternal(link.url)}
+          aria-label={`${labelForProvider(link.provider)} 생중계 바로가기`}
+        >
+          {labelForProvider(link.provider)}
+          <span className={styles.card__chipIcon} aria-hidden>
+            <svg viewBox="0 0 24 24" width="12" height="12" focusable="false" aria-hidden="true">
+              <path
+                d="M7 17L17 7M9 7h8v8"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </button>
       ))}
     </div>
   );
@@ -65,7 +106,7 @@ function GameCard({ g }: { g: GameItem }) {
         </div>
       </div>
 
-      <BroadcastChips items={g.broadcast} />
+      <BroadcastChips liveLinks={g.liveLinks ?? []} />
     </article>
   );
 }

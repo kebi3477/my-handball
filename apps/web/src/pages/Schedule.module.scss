@@ -333,6 +333,19 @@
     border-radius: 999px;
     background: var(--color-main);
     color: var(--color-white);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  &__chipLink {
+    cursor: pointer;
+  }
+
+  &__chipIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

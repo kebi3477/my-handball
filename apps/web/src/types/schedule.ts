@@ -5,12 +5,18 @@ export type TeamInfo = {
   logoUrl: string | null;
 };
 
+export type LiveLink = {
+  provider: string;
+  url: string;
+};
+
 export type GameItem = {
   home: TeamInfo;
   away: TeamInfo;
   scoreText: string | null;
   time: string | null;
   broadcast: string[];
+  liveLinks: LiveLink[];
   venue: string | null;
   containerId: string | null;
 };
