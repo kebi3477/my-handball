@@ -66,28 +66,38 @@ export async function downloadMyTeamIcs(
     teamName,
   } as ScheduleMyTeamRequest);
 
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    window.location.href = url;
+  const ua = navigator.userAgent ?? "";
+  const isIOS = /iPad|iPhone|iPod/i.test(ua) || (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
+  const userAgentData = ("userAgentData" in navigator
+    ? (navigator as Navigator & { userAgentData?: { mobile?: boolean } }).userAgentData
+    : undefined);
+  const isMobile = (userAgentData?.mobile ?? /Android|iPhone|iPad|iPod/i.test(ua));
+
+  if (isMobile || isIOS) {
+    window.location.assign(url);
     return;
   }
 
-  const res = await fetch(url, {
-    method: "GET",
-  });
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+    });
 
-  if (!res.ok) {
-    throw new Error(`ICS 다운로드 실패 (HTTP ${res.status})`);
+    if (!res.ok) {
+      throw new Error(`ICS 다운로드 실패 (HTTP ${res.status})`);
+    }
+
+    const blob = await res.blob();
+    const objectUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = `myteam-${season}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(objectUrl);
+  } catch {
+    window.location.assign(url);
   }
-
-  const blob = await res.blob();
-  const objectUrl = window.URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = objectUrl;
-  a.download = `myteam-${season}.ics`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  window.URL.revokeObjectURL(objectUrl);
 }
