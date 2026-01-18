@@ -144,6 +144,8 @@
     border-radius: 14px;
     border: 1px solid var(--color-border);
     background: var(--color-background-sub);
+    text-decoration: none;
+    color: inherit;
   }
 
   .settings__text {
@@ -162,6 +164,12 @@
     font-size: 12px;
     font-weight: 600;
     color: var(--color-text-sub);
+  }
+
+  .settings__action {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-main);
   }
 
   .select {

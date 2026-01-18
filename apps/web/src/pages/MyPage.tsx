@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import TeamPickerModal from "@/components/TeamPickerModal";
 import { useMyTeam } from "@/hooks/useMyTeam";
 import { useSeason } from "@/hooks/useSeason";
@@ -117,6 +118,14 @@ function MyPage() {
               </select>
             </div>
           </div>
+
+          <Link to="/policy" className={style.settings__row}>
+            <div className={style.settings__text}>
+              <div className={style.settings__title}>개인정보 처리방침</div>
+              <div className={style.settings__desc}>수집 및 이용 내용을 확인하세요</div>
+            </div>
+            <div className={style.settings__action}>보기</div>
+          </Link>
         </div>
       </section>
 
