@@ -53,7 +53,6 @@ function BroadcastChips({ liveLinks }: BroadcastChipsProps) {
           className={`${styles.card__chip} ${styles.card__chipLink}`}
           onClick={async () => {
             const ok = await openExternalUrl(link.url);
-            console.log(ok)
             if (!ok) alert(EXTERNAL_OPEN_ERROR);
           }}
           aria-label={`${labelForProvider(link.provider)} 생중계 바로가기`}

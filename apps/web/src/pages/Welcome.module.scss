@@ -46,6 +46,7 @@
     flex-flow: row nowrap;
     transition: all .5s ease-in-out;
     flex: 1;
+    min-height: 0;
     
     .step {
       width: 25%;
@@ -53,7 +54,8 @@
       display: flex;
       flex-direction: column;
       gap: 24px;
-      min-height: calc(100svh - 184px);
+      min-height: 0;
+      height: 100%;
       justify-content: center;
 
       .logo {
