@@ -154,6 +154,7 @@ export default function Calendar({ leagueType = "1" }: Props) {
             type="button"
             className={styles.header__sync}
             onClick={handleSyncMyTeamCalendar}
+            data-tutorial-id="calendar-sync"
           >
             일정 연동
           </button>

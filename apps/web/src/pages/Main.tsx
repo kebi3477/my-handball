@@ -140,10 +140,12 @@ export default function Main() {
   
   return (
     <div className={styles.page}>
-      <section className={styles.top} aria-label="가까운 경기">
+      <section className={styles.top} aria-label="가까운 경기" data-tutorial-id="main-upcoming">
         <header className={styles.header}>
           <h2 className={styles.header__title}>가까운 경기</h2>
-          <button className={styles.header__button}>{myTeam ? `${myTeamName} 일정` : '전체 일정'}</button>
+          <button className={styles.header__button} data-tutorial-id="main-upcoming-action">
+            {myTeam ? `${myTeamName} 일정` : '전체 일정'}
+          </button>
         </header>
 
         {loading && (
@@ -240,7 +242,7 @@ export default function Main() {
             팀 순위
           </h2>
 
-          <div className={styles.seg}>
+          <div className={styles.seg} data-tutorial-id="main-rank-toggle">
             <button
               type="button"
               className={`${styles.seg__button} ${rankGender === "M" ? styles.active : ""}`}

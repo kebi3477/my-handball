@@ -25,7 +25,7 @@ export default function Ranking() {
     <div className={styles.page}>
       <header className={styles.header}>
         <h1 className={styles.header__title}>팀 랭킹</h1>
-        <div className={styles.seg} role="tablist" aria-label="성별 선택">
+        <div className={styles.seg} role="tablist" aria-label="성별 선택" data-tutorial-id="ranking-gender">
           <button
             type="button"
             role="tab"
@@ -50,7 +50,7 @@ export default function Ranking() {
       {loading && <SkeletonRank />}
 
       {!loading && data && ranks.length > 1 && (
-        <div className={styles.rank}>
+        <div className={styles.rank} data-tutorial-id="ranking-list">
           <div className={styles.rank__header} aria-hidden={true}>
             <div className={`${styles.rank__col} ${styles.rank__colTeam}`}>팀명/순위</div>
             <div className={styles.rank__col}>경기수</div>
@@ -88,7 +88,12 @@ export default function Ranking() {
       )}
 
       {!loading && (!data || data.items.length <= 1) && (
-        <div className={styles.rank__empty} role="status" aria-live="polite">
+        <div
+          className={styles.rank__empty}
+          role="status"
+          aria-live="polite"
+          data-tutorial-id="ranking-list"
+        >
           <div className={styles.rank__empty__badge}>랭킹</div>
           <div className={styles.rank__empty__text}>
             아직 불러올 랭킹 데이터가 없어요.<br />

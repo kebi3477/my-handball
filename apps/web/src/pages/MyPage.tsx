@@ -5,6 +5,7 @@ import { useMyTeam } from "@/hooks/useMyTeam";
 import { useSeason } from "@/hooks/useSeason";
 import type { MyTeam } from "@/types/team";
 import { useTheme, type ThemeMode } from "@/hooks/useTheme";
+import { useTutorial } from "@/hooks/useTutorial";
 import style from "./MyPage.module.scss";
 import { SEASON_LABELS, SEASON_YEARS, type SeasonKey } from "@/constants/schedule";
 
@@ -12,6 +13,7 @@ function MyPage() {
   const { team: myTeam, save } = useMyTeam();
   const { season, save: saveSeason } = useSeason();
   const { theme, setTheme } = useTheme();
+  const { start } = useTutorial();
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const handlePicked = (team: MyTeam) => {
@@ -43,6 +45,7 @@ function MyPage() {
           type="button"
           className={`${style.team} ${myTeam ? style.active : ""}`}
           onClick={() => setPickerOpen(true)}
+          data-tutorial-id="my-team"
         >
           <div className={style.team__logo}>
             {myTeam?.logoUrl ? (
@@ -73,7 +76,7 @@ function MyPage() {
         </div>
 
         <div className={style.settings}>
-          <div className={style.settings__row}>
+          <div className={style.settings__row} data-tutorial-id="my-season">
             <div className={style.settings__text}>
               <div className={style.settings__title}>조회 시즌</div>
               <div className={style.settings__desc}>홈 · 일정 · 캘린더에 공통 적용</div>
@@ -97,7 +100,7 @@ function MyPage() {
             </div>
           </div>
 
-          <div className={style.settings__row}>
+          <div className={style.settings__row} data-tutorial-id="my-theme">
             <div className={style.settings__text}>
               <div className={style.settings__title}>테마</div>
               <div className={style.settings__desc}>기기 설정 · 라이트 · 다크 선택</div>
@@ -118,6 +121,19 @@ function MyPage() {
               </select>
             </div>
           </div>
+
+          <button
+            type="button"
+            className={style.settings__row}
+            onClick={start}
+            data-tutorial-id="my-tutorial-replay"
+          >
+            <div className={style.settings__text}>
+              <div className={style.settings__title}>튜토리얼 다시 보기</div>
+              <div className={style.settings__desc}>처음 안내를 다시 시작할 수 있어요</div>
+            </div>
+            <div className={style.settings__action}>시작</div>
+          </button>
 
           <Link to="/policy" className={style.settings__row}>
             <div className={style.settings__text}>

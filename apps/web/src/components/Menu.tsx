@@ -11,7 +11,7 @@ function Menu() {
     `${style.menu__item}${isActive ? ` ${style.active}` : ""}`;
 
   return (
-    <div className={style.menu}>
+    <div className={style.menu} data-tutorial-id="menu-tabs">
       <NavLink to="/" end className={linkClass}>
         <div className={style.menu__item__icon}><MenuHomeIcon /></div>
         <div className={style.menu__item__name}>홈</div>

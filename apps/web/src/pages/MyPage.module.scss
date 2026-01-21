@@ -146,6 +146,7 @@
     background: var(--color-background-sub);
     text-decoration: none;
     color: inherit;
+    cursor: pointer;
   }
 
   .settings__text {
@@ -158,6 +159,7 @@
     font-size: 14px;
     font-weight: 800;
     color: var(--color-black);
+    text-align: left;
   }
 
   .settings__desc {

@@ -259,7 +259,12 @@ function Schedule() {
           <h1 className={styles.header__title}>일정</h1>
 
           <div className={styles.header__actions}>
-            <div className={styles.viewSwitch} role="group" aria-label="보기 전환">
+            <div
+              className={styles.viewSwitch}
+              role="group"
+              aria-label="보기 전환"
+              data-tutorial-id="schedule-view-switch"
+            >
               <Link
                 to="/schedule"
                 className={styles.viewSwitch__button}
@@ -294,7 +299,12 @@ function Schedule() {
         </div>
 
         <div className={styles.filters}>
-          <div className={styles.seg} role="tablist" aria-label="성별 선택">
+          <div
+            className={styles.seg}
+            role="tablist"
+            aria-label="성별 선택"
+            data-tutorial-id="schedule-filter"
+          >
             <button
               type="button"
               role="tab"
@@ -338,7 +348,7 @@ function Schedule() {
           </button>
         </div>
 
-        <div className={styles.search}>
+        <div className={styles.search} data-tutorial-id="schedule-search">
           <input
             type="search"
             placeholder="팀/장소/방송 검색"

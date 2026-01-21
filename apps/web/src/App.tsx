@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Menu from "./components/Menu";
+import TutorialOverlay from "./components/TutorialOverlay";
 import styles from "./App.module.scss";
 
 import Main from "./pages/Main";
@@ -12,9 +13,17 @@ import Welcome from "./pages/Welcome";
 import { useProfileSetup } from "./hooks/useProfileSetup";
 import Ranking from "./pages/Ranking";
 import Policy from "./pages/Policy";
+import { useTutorial } from "./hooks/useTutorial";
 
 export default function App() {
   const { profileSetup } = useProfileSetup();
+  const { seen, start } = useTutorial();
+
+  useEffect(() => {
+    if (!profileSetup) return;
+    if (seen) return;
+    start();
+  }, [profileSetup, seen, start]);
 
   return (
     <BrowserRouter>
@@ -42,6 +51,7 @@ export default function App() {
         </div>
 
         {profileSetup && <Menu />}
+        {profileSetup && <TutorialOverlay />}
       </div>
 
     </BrowserRouter>
