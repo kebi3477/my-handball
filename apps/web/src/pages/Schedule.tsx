@@ -12,6 +12,7 @@ import { useMyTeam } from "@/hooks/useMyTeam";
 import ListIcon from '@/assets/icons/icon-list.svg?react';
 import CalendarIcon from "@/assets/icons/icon-calendar.svg?react";
 import { parseISODate } from "@/utils/schedule";
+import { normalizeExternalUrl, openExternalUrl } from "@/utils/external";
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
   return (
@@ -29,14 +30,7 @@ type BroadcastChipsProps = {
   liveLinks: LiveLink[];
 };
 
-function isValidExternalUrl(value?: string | null) {
-  const trimmed = (value ?? "").trim();
-  return /^https?:\/\//i.test(trimmed) ? trimmed : null;
-}
-
-function openExternal(url: string) {
-  window.open(url, "_blank", "noopener,noreferrer");
-}
+const EXTERNAL_OPEN_ERROR = "링크를 열 수 없습니다. 잠시 후 다시 시도해 주세요.";
 
 function labelForProvider(provider?: string) {
   const key = (provider ?? "").toLowerCase();
@@ -47,7 +41,7 @@ function labelForProvider(provider?: string) {
 
 function BroadcastChips({ liveLinks }: BroadcastChipsProps) {
   const validLinks = (liveLinks ?? []).filter((link) =>
-    isValidExternalUrl(link.url),
+    normalizeExternalUrl(link.url),
   );
   if (validLinks.length === 0) return null;
   return (
@@ -57,7 +51,11 @@ function BroadcastChips({ liveLinks }: BroadcastChipsProps) {
           key={`${link.provider}-${i}`}
           type="button"
           className={`${styles.card__chip} ${styles.card__chipLink}`}
-          onClick={() => openExternal(link.url)}
+          onClick={async () => {
+            const ok = await openExternalUrl(link.url);
+            console.log(ok)
+            if (!ok) alert(EXTERNAL_OPEN_ERROR);
+          }}
           aria-label={`${labelForProvider(link.provider)} 생중계 바로가기`}
         >
           {labelForProvider(link.provider)}

@@ -30,7 +30,7 @@ export default function App() {
       <div className={styles.app}>
         {profileSetup && <Header />}
 
-        <div className={styles.app__page}>
+        <div className={`${styles.app__page} ${!profileSetup ? styles.app__page_welcome : ""}`}>
           <Routes>
             {profileSetup ? (
               <>

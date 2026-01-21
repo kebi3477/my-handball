@@ -15,6 +15,10 @@
     width: min(100vw, var(--app-max-width));
     margin: 0 auto;
     padding-bottom: calc(var(--app-menu-height) + env(safe-area-inset-bottom));
+
+    &_welcome {
+      padding-bottom: 0px;
+    }
   }
 }
 

@@ -7,6 +7,7 @@ import { useSeason } from "@/hooks/useSeason";
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
 import { getCardDateLabel, toGameDate } from "@/utils/common";
+import { normalizeExternalUrl, openExternalUrl } from "@/utils/external";
 import SkeletonCard from "@/components/skeletons/SkeletonCard";
 import SkeletonRank from "@/components/skeletons/SkeletonRank";
 import Error from "@/components/Error";
@@ -56,10 +57,7 @@ function Logo({ src, alt }: { src: string | null | undefined; alt: string }) {
   );
 }
 
-function isValidExternalUrl(value?: string | null) {
-  const trimmed = (value ?? "").trim();
-  return /^https?:\/\//i.test(trimmed) ? trimmed : null;
-}
+const EXTERNAL_OPEN_ERROR = "링크를 열 수 없습니다. 잠시 후 다시 시도해 주세요.";
 
 function pickLiveLink(links: { provider: string; url: string }[] = []) {
   if (!links.length) return null;
@@ -168,7 +166,7 @@ export default function Main() {
               const g = s.game;
               const status = getGameStatus(s.date);
               const liveLink = status === "Live" ? pickLiveLink(g.liveLinks ?? []) : null;
-              const liveUrl = isValidExternalUrl(liveLink?.url);
+              const liveUrl = normalizeExternalUrl(liveLink?.url);
               const liveLabel =
                 liveLink?.provider?.toLowerCase() === "naver" ? "NAVER" : "생중계";
               return (
@@ -195,6 +193,11 @@ export default function Main() {
                       <a
                         className={styles.card__liveLink}
                         href={liveUrl}
+                        onClick={async (event) => {
+                          event.preventDefault();
+                          const ok = await openExternalUrl(liveUrl);
+                          if (!ok) alert(EXTERNAL_OPEN_ERROR);
+                        }}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
