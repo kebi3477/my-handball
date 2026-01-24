@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className={styles.app}>
+      <div className={`${styles.app} ${!profileSetup ? styles.app_welcome : ""}`}>
         {profileSetup && <Header />}
 
         <div className={`${styles.app__page} ${!profileSetup ? styles.app__page_welcome : ""}`}>
