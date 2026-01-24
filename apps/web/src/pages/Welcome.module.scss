@@ -10,15 +10,14 @@
   flex-direction: column;
 
   .progress {
-    height: 64px;
-    display: flex;
+    display: none;
     align-items: center;
     gap: 4px;
+    height: 64px;
     padding: 20px;
-    visibility: hidden;
 
     &.active {
-      visibility: visible;
+      display: flex;
     }
     
     &__button {
