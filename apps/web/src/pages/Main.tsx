@@ -11,18 +11,36 @@ import { normalizeExternalUrl, openExternalUrl } from "@/utils/external";
 import SkeletonCard from "@/components/skeletons/SkeletonCard";
 import SkeletonRank from "@/components/skeletons/SkeletonRank";
 import Error from "@/components/Error";
+import ExternalLinkIcon from "@/assets/icons/icon-external-link.svg?react";
 
 function pickIndex(list: { date: Date }[], now = Date.now()) {
-  let best = -1;
-  let bestDiff = Number.POSITIVE_INFINITY;
+  let liveBest = -1;
+  let liveDiff = Number.POSITIVE_INFINITY;
+  let futureBest = -1;
+  let futureDiff = Number.POSITIVE_INFINITY;
+
   list.forEach((s, i) => {
-    const diff = s.date.getTime() - now;
-    if (diff >= 0 && diff < bestDiff) {
-      bestDiff = diff;
-      best = i;
+    const start = s.date.getTime();
+    const end = start + 2 * 60 * 60 * 1000;
+    if (now >= start && now <= end) {
+      const diff = now - start;
+      if (diff < liveDiff) {
+        liveDiff = diff;
+        liveBest = i;
+      }
+      return;
+    }
+
+    const diff = start - now;
+    if (diff >= 0 && diff < futureDiff) {
+      futureDiff = diff;
+      futureBest = i;
     }
   });
-  return best >= 0 ? best : Math.max(0, list.length - 1);
+
+  if (liveBest >= 0) return liveBest;
+  if (futureBest >= 0) return futureBest;
+  return Math.max(0, list.length - 1);
 }
 
 type SlideItem = {
@@ -202,6 +220,9 @@ export default function Main() {
                         rel="noopener noreferrer"
                       >
                         {liveLabel}
+                        <span className={styles.card__liveLinkIcon} aria-hidden>
+                          <ExternalLinkIcon />
+                        </span>
                       </a>
                     )}
                   </div>

@@ -11,6 +11,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useMyTeam } from "@/hooks/useMyTeam";
 import ListIcon from '@/assets/icons/icon-list.svg?react';
 import CalendarIcon from "@/assets/icons/icon-calendar.svg?react";
+import ExternalLinkIcon from "@/assets/icons/icon-external-link.svg?react";
 import { parseISODate } from "@/utils/schedule";
 import { normalizeExternalUrl, openUrl } from "@/utils/external";
 
@@ -56,16 +57,7 @@ function BroadcastChips({ liveLinks }: BroadcastChipsProps) {
         >
           {labelForProvider(link.provider)}
           <span className={styles.card__chipIcon} aria-hidden>
-            <svg viewBox="0 0 24 24" width="12" height="12" focusable="false" aria-hidden="true">
-              <path
-                d="M7 17L17 7M9 7h8v8"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <ExternalLinkIcon />
           </span>
         </button>
       ))}
