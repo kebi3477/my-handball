@@ -6,6 +6,7 @@
   min-height: 100svh;
   background-color: var(--color-background);
   padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 
   display: flex;
   flex-direction: column;
