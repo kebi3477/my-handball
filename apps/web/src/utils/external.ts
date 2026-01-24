@@ -4,6 +4,17 @@ type ExternalOpenBridge = {
   openExternal: (url: string) => void | Promise<void>;
 };
 
+type NativeBridgeMessage = {
+  type: "OPEN_URL";
+  payload: {
+    url: string;
+  };
+};
+
+type NativeBridgeHandler = {
+  postMessage: (message: NativeBridgeMessage) => void;
+};
+
 function getBridge(): ExternalOpenBridge | null {
   if (typeof window === "undefined") return null;
   const w = window as Window & {
@@ -12,6 +23,28 @@ function getBridge(): ExternalOpenBridge | null {
   };
 
   return w.api ?? w.electron ?? null;
+}
+
+function getNativeBridgeHandler(): NativeBridgeHandler | null {
+  if (typeof window === "undefined") return null;
+  const w = window as Window & {
+    webkit?: {
+      messageHandlers?: {
+        nativeBridge?: NativeBridgeHandler;
+      };
+    };
+    __NATIVE_BRIDGE__?: boolean;
+  };
+
+  if (w.webkit?.messageHandlers?.nativeBridge) {
+    return w.webkit.messageHandlers.nativeBridge;
+  }
+
+  if (w.__NATIVE_BRIDGE__) {
+    console.warn("[openUrl] __NATIVE_BRIDGE__ is true, but nativeBridge handler is missing.");
+  }
+
+  return null;
 }
 
 export function normalizeExternalUrl(value?: string | null) {
@@ -27,6 +60,45 @@ export function normalizeExternalUrl(value?: string | null) {
   }
 }
 
+export function openUrl(value?: string | null): void {
+  if (typeof window === "undefined") return;
+
+  const url = normalizeExternalUrl(value);
+  if (!url) {
+    console.warn("[openUrl] Invalid URL:", value);
+    return;
+  }
+
+  const nativeBridge = getNativeBridgeHandler();
+  if (nativeBridge) {
+    try {
+      nativeBridge.postMessage({
+        type: "OPEN_URL",
+        payload: { url },
+      });
+      return;
+    } catch (error) {
+      console.error("[openUrl] nativeBridge postMessage failed:", error);
+    }
+  }
+
+  try {
+    const opened = window.open(url, "_blank", "noopener,noreferrer");
+    if (opened) {
+      opened.opener = null;
+      return;
+    }
+  } catch (error) {
+    console.error("[openUrl] window.open failed:", error);
+  }
+
+  try {
+    window.location.href = url;
+  } catch (error) {
+    console.error("[openUrl] location.href failed:", error);
+  }
+}
+
 export async function openExternalUrl(value?: string | null) {
   if (typeof window === "undefined") return false;
 
@@ -39,16 +111,6 @@ export async function openExternalUrl(value?: string | null) {
     return true;
   }
 
-  const opened = window.open(url, "_blank");
-  if (opened) {
-    opened.opener = null;
-    return true;
-  }
-
-  const link = document.createElement("a");
-  link.href = url;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-  link.click();
+  openUrl(url);
   return true;
 }

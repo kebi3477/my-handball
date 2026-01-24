@@ -12,7 +12,7 @@ import { useMyTeam } from "@/hooks/useMyTeam";
 import ListIcon from '@/assets/icons/icon-list.svg?react';
 import CalendarIcon from "@/assets/icons/icon-calendar.svg?react";
 import { parseISODate } from "@/utils/schedule";
-import { normalizeExternalUrl, openExternalUrl } from "@/utils/external";
+import { normalizeExternalUrl, openUrl } from "@/utils/external";
 
 function Logo({ src, alt }: { src: string | null; alt: string }) {
   return (
@@ -29,8 +29,6 @@ function Logo({ src, alt }: { src: string | null; alt: string }) {
 type BroadcastChipsProps = {
   liveLinks: LiveLink[];
 };
-
-const EXTERNAL_OPEN_ERROR = "링크를 열 수 없습니다. 잠시 후 다시 시도해 주세요.";
 
 function labelForProvider(provider?: string) {
   const key = (provider ?? "").toLowerCase();
@@ -51,9 +49,8 @@ function BroadcastChips({ liveLinks }: BroadcastChipsProps) {
           key={`${link.provider}-${i}`}
           type="button"
           className={`${styles.card__chip} ${styles.card__chipLink}`}
-          onClick={async () => {
-            const ok = await openExternalUrl(link.url);
-            if (!ok) alert(EXTERNAL_OPEN_ERROR);
+          onClick={() => {
+            openUrl(link.url);
           }}
           aria-label={`${labelForProvider(link.provider)} 생중계 바로가기`}
         >

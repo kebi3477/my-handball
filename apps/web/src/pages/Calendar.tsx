@@ -3,7 +3,8 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 import styles from "./Calendar.module.scss";
 import { useMyTeam } from "@/hooks/useMyTeam";
 import { useSeason } from "@/hooks/useSeason";
-import { useSchedule, downloadMyTeamIcs } from "@/hooks/useSchedule";
+import { useSchedule } from "@/hooks/useSchedule";
+import { buildScheduleMyTeamIcsUrl } from "@/config/api";
 import { getMonthMatrix, parseISODate, summarizeGameForTeam } from "@/utils/schedule";
 import type { GameSummary } from "@/utils/schedule";
 import type { Gender } from "@/types/team";
@@ -11,6 +12,7 @@ import ListIcon from '@/assets/icons/icon-list.svg?react';
 import CalendarIcon from "@/assets/icons/icon-calendar.svg?react";
 import Error from "@/components/Error";
 import SkeletonCalendar from "@/components/skeletons/SkeletonCalendar";
+import { openUrl } from "@/utils/external";
 
 
 const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
@@ -78,23 +80,19 @@ export default function Calendar({ leagueType = "1" }: Props) {
     setMonth(d.getMonth() + 1);
   };
 
-   const handleSyncMyTeamCalendar = async () => {
+   const handleSyncMyTeamCalendar = () => {
     if (!myTeam) {
       alert("먼저 마이팀을 설정해 주세요.");
       return;
     }
 
-    try {
-      await downloadMyTeamIcs({
-        gender,
-        season,
-        type: leagueType,
-        teamName: myTeam.name,
-      });
-    } catch (e) {
-      console.error(e);
-      alert("캘린더 파일 생성에 실패했습니다. 잠시 후 다시 시도해 주세요.");
-    }
+    const url = buildScheduleMyTeamIcsUrl({
+      gender,
+      season,
+      type: leagueType,
+      teamName: myTeam.name,
+    });
+    openUrl(url);
   };
 
   return (
