@@ -5,7 +5,7 @@ type ExternalOpenBridge = {
 };
 
 type NativeBridgeMessage = {
-  type: "OPEN_URL";
+  type: "OPEN_URL_EXTERNAL";
   payload: {
     url: string;
   };
@@ -73,13 +73,13 @@ export function openUrl(value?: string | null): void {
   if (nativeBridge) {
     try {
       nativeBridge.postMessage({
-        type: "OPEN_URL",
+        type: "OPEN_URL_EXTERNAL",
         payload: { url },
       });
-      return;
     } catch (error) {
       console.error("[openUrl] nativeBridge postMessage failed:", error);
     }
+    return;
   }
 
   try {
