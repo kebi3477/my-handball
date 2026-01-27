@@ -14,6 +14,7 @@ function MyPage() {
   const { season, save: saveSeason } = useSeason();
   const { theme, setTheme } = useTheme();
   const { start } = useTutorial();
+
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const handlePicked = (team: MyTeam) => {
@@ -144,6 +145,10 @@ function MyPage() {
           </Link>
         </div>
       </section>
+
+      <div className={style.footer}>
+        ⓒ 2025, Dongmin Ko All rights reserved.
+      </div>
 
       <TeamPickerModal
         open={pickerOpen}

@@ -5,7 +5,7 @@ import ProgressBackIcon from "@/assets/icons/icon-progress-back.svg?react";
 import TeamCheckIcon from "@/assets/icons/icon-team-check.svg?react";
 import MaleIcon from "@/assets/icons/icon-welcome-male.svg?react";
 import FemaleIcon from "@/assets/icons/icon-welcome-female.svg?react";
-import type { Gender, TeamItem } from "@/types/team";
+import type { Gender, MyTeam, TeamItem } from "@/types/team";
 import style from "./Welcome.module.scss";
 import { useTeam } from "@/hooks/useTeam";
 import { useProfileSetup } from "@/hooks/useProfileSetup";
@@ -66,7 +66,7 @@ function Welcome() {
       console.error("Failed to submit welcome data", err);
     } finally {
       profileSetup.save(true);
-      myTeam.save(selectedTeam);
+      myTeam.save({ ...selectedTeam, gender: selectedGender } as MyTeam);
       window.location.reload();
     }
   }, [age, gender, myTeam, profileSetup, selectedGender, selectedTeam]);
