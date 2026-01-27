@@ -231,7 +231,17 @@ function Schedule() {
     if (!targetInfo) return;
     const target = document.querySelector<HTMLElement>(`[data-day-index="${targetInfo.index}"]`);
     if (!target) return;
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    const offset = -66;
+    const root = document.getElementById("root");
+    if (root) {
+      const rootRect = root.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const top = root.scrollTop + (targetRect.top - rootRect.top) + offset;
+      root.scrollTo({ top, behavior: "smooth" });
+      return;
+    }
+    const y = target.getBoundingClientRect().top + window.scrollY + offset;
+    window.scrollTo({ top: y, behavior: "smooth" });
   };
 
   if (error) {
@@ -370,7 +380,6 @@ function Schedule() {
             >
               <div className={styles.day__label} aria-label="날짜">
                 <span className={styles.day__date}>{d.dateLabel}</span>
-                {d.dateISO && <span className={styles.day__iso}>{d.dateISO}</span>}
               </div>
               <div className={styles.day__cards}>
                 {d.games.map((g, i) => (
