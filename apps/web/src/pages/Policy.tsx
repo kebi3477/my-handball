@@ -5,7 +5,7 @@ function Policy() {
     <div className={styles.page}>
       <header className={styles.header}>
         <h1 className={styles.title}>개인정보 처리방침</h1>
-        <div className={styles.meta}>시행일: 2024-01-01</div>
+        <div className={styles.meta}>시행일: 2026-01-01</div>
       </header>
 
       <section className={styles.section}>
