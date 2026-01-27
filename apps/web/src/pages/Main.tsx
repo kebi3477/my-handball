@@ -7,7 +7,7 @@ import { useSeason } from "@/hooks/useSeason";
 import type { GameItem } from "@/types/schedule";
 import type { Gender } from "@/types/team";
 import { getCardDateLabel, toGameDate } from "@/utils/common";
-import { normalizeExternalUrl, openExternalUrl } from "@/utils/external";
+import { normalizeExternalUrl, openUrl } from "@/utils/external";
 import SkeletonCard from "@/components/skeletons/SkeletonCard";
 import SkeletonRank from "@/components/skeletons/SkeletonRank";
 import Error from "@/components/Error";
@@ -213,8 +213,7 @@ export default function Main() {
                         href={liveUrl}
                         onClick={async (event) => {
                           event.preventDefault();
-                          const ok = await openExternalUrl(liveUrl);
-                          if (!ok) alert(EXTERNAL_OPEN_ERROR);
+                          openUrl(liveUrl);
                         }}
                         target="_blank"
                         rel="noopener noreferrer"

@@ -15,16 +15,6 @@ type NativeBridgeHandler = {
   postMessage: (message: NativeBridgeMessage) => void;
 };
 
-function getBridge(): ExternalOpenBridge | null {
-  if (typeof window === "undefined") return null;
-  const w = window as Window & {
-    api?: ExternalOpenBridge;
-    electron?: ExternalOpenBridge;
-  };
-
-  return w.api ?? w.electron ?? null;
-}
-
 function getNativeBridgeHandler(): NativeBridgeHandler | null {
   if (typeof window === "undefined") return null;
   const w = window as Window & {
@@ -97,20 +87,4 @@ export function openUrl(value?: string | null): void {
   } catch (error) {
     console.error("[openUrl] location.href failed:", error);
   }
-}
-
-export async function openExternalUrl(value?: string | null) {
-  if (typeof window === "undefined") return false;
-
-  const url = normalizeExternalUrl(value);
-  if (!url) return false;
-
-  const bridge = getBridge();
-  if (bridge?.openExternal) {
-    await Promise.resolve(bridge.openExternal(url));
-    return true;
-  }
-
-  openUrl(url);
-  return true;
 }
