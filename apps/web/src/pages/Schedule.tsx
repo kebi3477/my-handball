@@ -339,8 +339,17 @@ function Schedule() {
             aria-label={myTeamName ? "마이팀 경기만 보기" : "마이팀을 선택해 주세요"}
             title={myTeamName ? "마이팀 경기만 보기" : "마이팀을 선택해 주세요"}
           >
-            <span className={styles.myToggle__thumb} />
-            <span className={styles.myToggle__label}>MY</span>
+            { showMyTeam ? (
+              <>
+              <span className={styles.myToggle__label}>MY</span>
+              <span className={styles.myToggle__thumb} />
+              </>
+            ) : (
+              <>
+              <span className={styles.myToggle__thumb} />
+              <span className={styles.myToggle__label}>MY</span>
+              </>
+            )}
           </button>
         </div>
 

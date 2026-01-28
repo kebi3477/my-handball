@@ -303,7 +303,7 @@ export default function Main() {
           <div className={styles.rank}>
             <div className={styles.rank__top}>
               { topRank && topRank.map(r => (
-                <div className={styles.rank__top__wrap}>
+                <div key={r?.rank} className={styles.rank__top__wrap}>
                   <div className={styles.rank__top__title}>
                     {r?.rank}위
                   </div>
@@ -323,7 +323,7 @@ export default function Main() {
             </div>
             <div className={styles.rank__scroll}>
               { otherRank?.map((r) => (
-                <div className={styles.rank__item}>
+                <div key={r.rank} className={styles.rank__item}>
                   <div className={styles.rank__title}>
                     {r.rank}위
                   </div>

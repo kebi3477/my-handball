@@ -10,6 +10,9 @@ function Menu() {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `${style.menu__item}${isActive ? ` ${style.active}` : ""}`;
 
+  const isCalendar = pathname.startsWith("/calendar");
+  const isPolicy = pathname.startsWith("/policy");
+
   return (
     <div className={style.menu} data-tutorial-id="menu-tabs">
       <NavLink to="/" end className={linkClass}>
@@ -20,7 +23,7 @@ function Menu() {
       <NavLink
         to="/schedule"
         className={({ isActive }) =>
-          `${style.menu__item}${(isActive || pathname.startsWith("/calendar")) ? ` ${style.active}` : ""}`
+          `${style.menu__item}${(isActive || isCalendar) ? ` ${style.active}` : ""}`
         }
       >
         <div className={style.menu__item__icon}><MenuCalendarIcon /></div>
@@ -32,7 +35,12 @@ function Menu() {
         <div className={style.menu__item__name}>랭킹</div>
       </NavLink>
 
-      <NavLink to="/my" className={linkClass}>
+      <NavLink 
+        to="/my" 
+        className={({ isActive }) =>
+          `${style.menu__item}${(isActive || isPolicy) ? ` ${style.active}` : ""}`
+        }
+      >
         <div className={style.menu__item__icon}><MenuMyIcon /></div>
         <div className={style.menu__item__name}>MY</div>
       </NavLink>
