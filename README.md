@@ -1,6 +1,6 @@
 # MyHandball 모노레포
 
-React 웹앱과 NestJS API로 구성된 핸드볼 경기/랭킹/팀 정보를 제공하는 프로젝트입니다. 온보딩(Welcome) 제출 데이터를 Postgres에 기록하며, Redis를 캐시로 사용합니다
+React 웹앱과 NestJS API로 구성된 핸드볼 경기/랭킹/팀 정보를 제공하는 프로젝트입니다. 온보딩(Welcome) 제출 데이터를 Postgres에 기록하며, Redis를 캐시로 사용합니다.
 
 ## 레포 구조
 - `apps/web` – Vite 기반 React 18 SPA, TypeScript + SCSS, Recoil 상태.
