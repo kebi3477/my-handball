@@ -91,9 +91,9 @@ export default function Main() {
   const { season } = useSeason();
 
   const { data, loading, error } = useSchedule({
-    gender: myTeamGender,
+    gender: "",
     season,
-    type: "1",
+    type: "2",
   });
 
   const slides = useMemo<SlideItem[]>(() => {

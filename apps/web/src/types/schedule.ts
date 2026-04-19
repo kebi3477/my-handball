@@ -29,7 +29,7 @@ export type DayBlock = {
 
 export type ScheduleResponse = {
   url: string;
-  leagueGender: Gender;
+  leagueGender: Gender | "";
   leagueSeason: string;
   leagueType: string;
   leagueMonth?: string;

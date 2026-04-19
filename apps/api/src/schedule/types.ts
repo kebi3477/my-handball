@@ -27,7 +27,7 @@ export interface DayBlock {
 
 export interface ScheduleResponse {
   url: string;
-  leagueGender: "W" | "M";
+  leagueGender: "W" | "M" | "";
   leagueSeason: string;  // "2025"
   leagueType: string;    // "1"
   leagueMonth: string;

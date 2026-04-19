@@ -99,15 +99,23 @@ function parseGame($: CheerioAPI, $li: CheerioType<any>, containerId: string | n
 export class ScheduleService {
   private buildUrl(league_gender: string, league_season: string, league_type: string, league_month: string) {
     const u = new URL(`${BASE}/game/schedule_list.php`);
-    u.searchParams.set("league_gender", league_gender);
-    u.searchParams.set("league_season", league_season);
-    u.searchParams.set("league_type", league_type);
-    u.searchParams.set("league_season_month", league_month);
+    if (league_gender) {
+      u.searchParams.set("league_gender", league_gender);
+    }
+    if (league_season) {
+      u.searchParams.set("league_season", league_season);
+    }
+    if (league_type) {
+      u.searchParams.set("league_type", league_type);
+    }
+    if (league_month) {
+      u.searchParams.set("league_season_month", league_month);
+    }
     return u.toString();
   }
 
   async fetchSchedule(
-    league_gender: "W" | "M" = "W",
+    league_gender: "W" | "M" | "" = "W",
     league_season = "2025",
     league_type = "1",
     league_month = "",

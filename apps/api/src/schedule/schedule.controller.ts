@@ -12,7 +12,7 @@ export class ScheduleController {
    */
   @Get()
   async getSchedule(
-    @Query("gender") gender: "W" | "M" = "W",
+    @Query("gender") gender: "W" | "M" | "" = "W",
     @Query("season") season = "2025",
     @Query("type") type = "1",
     @Query("month") month = "",

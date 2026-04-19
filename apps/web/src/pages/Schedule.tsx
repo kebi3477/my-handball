@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./Schedule.module.scss";
 import { useSchedule } from "@/hooks/useSchedule";
-import { GENDER_LABEL } from "@/constants/schedule";
 import type { GameItem, LiveLink } from "@/types/schedule";
-import type { Gender } from "@/types/team";
 import SkeletonSchedule from "@/components/skeletons/SkeletonSchedule";
 import Error from "@/components/Error";
 import { useSeason } from "@/hooks/useSeason";
@@ -97,22 +95,42 @@ function GameCard({ g }: { g: GameItem }) {
   );
 }
 
+type ScheduleFilter = "postseason" | "all" | "W" | "M";
+
+const FILTER_OPTIONS: { key: ScheduleFilter; label: string }[] = [
+  { key: "postseason", label: "포스트시즌" },
+  { key: "all", label: "전체" },
+  { key: "W", label: "여자부" },
+  { key: "M", label: "남자부" },
+];
+
 function Schedule() {
-  const [gender, setGender] = useState<Gender | "">("");
+  const [filter, setFilter] = useState<ScheduleFilter>("postseason");
   const [query, setQuery] = useState<string>("");
-  
+
   const { season } = useSeason();
   const { team: myTeam } = useMyTeam();
+  const scheduleParams = useMemo(() => {
+    if (filter === "postseason") {
+      return { gender: "" as const, type: "2" };
+    }
+    if (filter === "all") {
+      return { gender: "" as const, type: "1" };
+    }
+    return { gender: filter, type: "1" };
+  }, [filter]);
+
   const { data, loading, error } = useSchedule({
-    gender,
+    gender: scheduleParams.gender,
     season,
+    type: scheduleParams.type,
   });
-  
+
   const location = useLocation();
   const myTeamName = myTeam?.name ?? "";
   const isSchedule = location.pathname === "/schedule";
   const hasMyTeam = !!myTeamName;
-  
+
   const [showMyTeam, setShowMyTeam] = useState<boolean>(hasMyTeam);
 
   const filteredDays = useMemo(() => {
@@ -298,36 +316,21 @@ function Schedule() {
           <div
             className={styles.seg}
             role="tablist"
-            aria-label="성별 선택"
+            aria-label="일정 필터 선택"
             data-tutorial-id="schedule-filter"
           >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={gender === ""}
-              className={`${styles.seg__button} ${gender === "" ? styles.active : ""}`}
-              onClick={() => setGender("")}
-            >
-              전체
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={gender === "W"}
-              className={`${styles.seg__button} ${gender === "W" ? styles.active : ""}`}
-              onClick={() => setGender("W")}
-            >
-              여자부
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={gender === "M"}
-              className={`${styles.seg__button} ${gender === "M" ? styles.active : ""}`}
-              onClick={() => setGender("M")}
-            >
-              남자부
-            </button>
+            {FILTER_OPTIONS.map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                role="tab"
+                aria-selected={filter === option.key}
+                className={`${styles.seg__button} ${filter === option.key ? styles.active : ""}`}
+                onClick={() => setFilter(option.key)}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
 
           <button
