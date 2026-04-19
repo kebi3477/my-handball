@@ -98,7 +98,7 @@ function GameCard({ g }: { g: GameItem }) {
 type ScheduleFilter = "postseason" | "all" | "W" | "M";
 
 const FILTER_OPTIONS: { key: ScheduleFilter; label: string }[] = [
-  { key: "postseason", label: "포스트시즌" },
+  { key: "postseason", label: "포스트" },
   { key: "all", label: "전체" },
   { key: "W", label: "여자부" },
   { key: "M", label: "남자부" },
